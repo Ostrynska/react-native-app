@@ -14,12 +14,18 @@
     "expo-splash-screen": "^0.18.1",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
-    "react-native": "0.71.4"
+    "react-devtools-core": "^4.27.4",
+    "react-native": "0.71.4",
+    "react-native-svg": "13.4.0",
+    "react-native-svg-transformer": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "metro": "^0.76.0",
     "metro-core": "^0.76.0"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "react-devtools-core": "~4.25.0"
+  }
 }

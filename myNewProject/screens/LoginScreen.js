@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 40,
     marginBottom: 15,
-    // fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: 50,
     padding: 16,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
@@ -128,18 +128,18 @@ const styles = StyleSheet.create({
   textSecure: {
     position: "absolute",
     marginTop: -35,
-    marginLeft: 335,
+    marginLeft: Platform.OS == "ios" ? 335 : 305,
     color: '#1B4371',
   },
   btnBox: {
-    marginTop: 45,
+    marginTop: Platform.OS == "ios" ? 45 : 30,
   },
   btn: {
     backgroundColor: '#FF6C00',
     borderRadius: 100,
   },
   btnText: {
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#ffffff",
     fontSize: 16,
     lineHeight: 19,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     },
   text: {
     marginTop: 18,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',

@@ -1,35 +1,58 @@
-import React, { useState, useCallback } from "react";
-import { StyleSheet, View} from 'react-native';
-// import { useFonts } from 'expo-font';
-// import * as SplashScreen from 'expo-splash-screen';
+import React, { useState, useCallback, useEffect } from "react";
+import { StyleSheet, View } from 'react-native';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from "expo-status-bar";
 
 import RegistrationScreen from './screens/RegistrationScreen';
-import LoginScreen from './screens/LoginScreen'
+import LoginScreen from './screens/LoginScreen';
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
-export default function App()
+export function App()
 {
-  // const [fontsLoaded] = useFonts({
-  //   "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-  //   "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-  // });
+  const [appIsReady, setAppIsReady] = useState(false);
 
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+        await Font.loadAsync({
+        "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+        "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+      })
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
 
   return (
-    <View style={styles.container}>
-      <RegistrationScreen />
-      {/* <LoginScreen /> */}
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      {/* <RegistrationScreen /> */}
+      <LoginScreen />
       <StatusBar style="auto" />
     </View>
   );

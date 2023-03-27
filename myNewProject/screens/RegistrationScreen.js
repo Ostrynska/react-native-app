@@ -1,7 +1,3 @@
-
-// import React, { useState } from "react";
-// import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, Alert, Button,} from 'react-native';
-
 // export default function RegistrationScreen()
 // {
 //     // const [login, setLogin] = useState("");
@@ -11,53 +7,12 @@
 //     // const loginHandler = (text) => setLogin(text);
 //     // const emailHandler = (email) => setEmail(email);
 //     // const passwordHandler = (text) => setPassword(text);
-
-//     // const onLogin = () => {
-//     //     Alert.alert("Credentials", `${login} + ${password}`);
-//     // };
-
-//     return (
-//         <View style={styles.container}>
-//             <ImageBackground
-//                 source={require('../assets/images/registration-bg.jpg')}
-//                 style={styles.image}
-//             >
-//                 <Text>Registration</Text>
-//             </ImageBackground>
-//         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-//             <View style={styles.container}>
-//                 <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}>
-//                 <Text>Registration</Text>
-//                     <TextInput
-//                         value={login}
-//                         onChangeText={loginHandler}
-//                         placeholder="Login"
-//                         style={styles.input}
-//                     />
-//                     <TextInput
-//                         value={email}
-//                         onChangeText={emailHandler}
-//                         placeholder="Email"
-//                         style={styles.input}
-//                     />
-//                     <TextInput
-//                         value={password}
-//                         onChangeText={passwordHandler}
-//                         placeholder="Password"
-//                         secureTextEntry={true}
-//                         style={styles.input}
-//                     />
-//                 </KeyboardAvoidingView>
-//             </View>
-//         </TouchableWithoutFeedback>
-//         <Button title={"Login"} style={styles.input} onPress={onLogin} /> */}
-//         </View>
-//     );
 // }
-
 
 import React, { useState } from "react";
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
+
+import Logo from '../assets/svg/add-icon.svg'
 
 const initialState = {
   login: "",
@@ -97,7 +52,10 @@ export default function RegistrationScreen()
           source={require("../assets/images/signUp-bg.jpg")}
         >
         <View style={styles.innerBox} height={height / 1.55}>
-          <View style={styles.photoBox}></View>
+            <View style={styles.photoBox}></View>
+            <TouchableOpacity >
+              <Logo width={25} height={25} fill={'#FF6C00'} style={styles.photoBoxAddBtn}/>
+            </TouchableOpacity>
             <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
                   <TextInput
@@ -178,10 +136,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
+  photoBoxAddBtn: {
+    position: "absolute",
+    marginLeft: 47,
+    marginVertical: 20,
+  },
   titleText: {
     marginTop: 92,
     marginBottom: 15,
-    // fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
@@ -194,7 +157,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: 50,
     padding: 16,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
@@ -206,7 +169,7 @@ const styles = StyleSheet.create({
   textSecure: {
     position: "absolute",
     marginTop: -35,
-    marginLeft: 335,
+    marginLeft: Platform.OS == "ios" ? 335 : 305,
     color: '#1B4371',
   },
   btnBox: {
@@ -217,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   btnText: {
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#ffffff",
     fontSize: 16,
     lineHeight: 19,
@@ -226,7 +189,7 @@ const styles = StyleSheet.create({
     },
   text: {
     marginTop: 18,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',
