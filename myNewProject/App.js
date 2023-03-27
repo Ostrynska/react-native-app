@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from "expo-status-bar";
@@ -50,11 +52,14 @@ export function App()
   }
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
+    <NavigationContainer>
+      <View style={styles.container} onLayout={onLayoutRootView}>
       {/* <RegistrationScreen /> */}
       <LoginScreen />
       <StatusBar style="auto" />
     </View>
+    </NavigationContainer>
+
   );
 }
 

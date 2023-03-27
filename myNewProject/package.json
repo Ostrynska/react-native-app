@@ -6,16 +6,23 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19000' && expo start"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/stack": "^6.3.16",
     "expo": "~48.0.9",
     "expo-font": "~11.1.1",
     "expo-splash-screen": "^0.18.1",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
-    "react-devtools-core": "^4.27.4",
     "react-native": "0.71.4",
+    "react-native-gesture-handler": "~2.9.0",
+    "react-native-reanimated": "~2.14.4",
+    "react-native-safe-area-context": "4.5.0",
+    "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-svg-transformer": "^1.0.0"
   },
@@ -24,8 +31,5 @@
     "metro": "^0.76.0",
     "metro-core": "^0.76.0"
   },
-  "private": true,
-  "overrides": {
-    "react-devtools-core": "~4.25.0"
-  }
+  "private": true
 }
