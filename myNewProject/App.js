@@ -1,71 +1,65 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, View } from 'react-native';
+// import { View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from "expo-status-bar";
 
-import RegistrationScreen from './screens/RegistrationScreen';
-import LoginScreen from './screens/LoginScreen';
+import { useRoute } from "./router";
+// SplashScreen.preventAutoHideAsync();
 
-SplashScreen.preventAutoHideAsync();
 
 export function App()
 {
-  const [appIsReady, setAppIsReady] = useState(false);
+  // const [appIsReady, setAppIsReady] = useState(false);
+  const routing = useRoute({});
 
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-  }, []);
+  // useEffect(() => {
+  //   async function prepare() {
+  //     await SplashScreen.preventAutoHideAsync();
+  //   }
+  //   prepare();
+  // }, []);
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        await SplashScreen.preventAutoHideAsync();
-        await Font.loadAsync({
-        "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-        "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-      })
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setAppIsReady(true);
-      }
-    }
+  // useEffect(() => {
+  //   async function prepare() {
+  //     try {
+  //       await SplashScreen.preventAutoHideAsync();
+  //       await Font.loadAsync({
+  //       "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+  //       "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+  //     })
+  //       await new Promise(resolve => setTimeout(resolve, 2000));
+  //     } catch (e) {
+  //       console.warn(e);
+  //     } finally {
+  //       setAppIsReady(true);
+  //     }
+  //   }
 
-    prepare();
-  }, []);
+  //   prepare();
+  // }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (appIsReady) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [appIsReady]);
 
-  if (!appIsReady) {
-    return null;
-  }
+  // if (!appIsReady) {
+  //   return null;
+  // }
+
+//   return (
+//     <View onLayout={ onLayoutRootView }>
+//       <RegistrationScreen />
+//     </View> 
+// )
 
   return (
-    <NavigationContainer>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-      {/* <RegistrationScreen /> */}
-      <LoginScreen />
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer >
+      {routing}
     </NavigationContainer>
-
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});

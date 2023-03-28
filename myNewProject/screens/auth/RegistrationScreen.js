@@ -1,12 +1,26 @@
+// export default function RegistrationScreen()
+// {
+//     // const [login, setLogin] = useState("");
+//     // const [email, setEmail] = useState("");
+//     // const [password, setPassword] = useState("");
+
+//     // const loginHandler = (text) => setLogin(text);
+//     // const emailHandler = (email) => setEmail(email);
+//     // const passwordHandler = (text) => setPassword(text);
+// }
+
 import React, { useState } from "react";
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 
+import AddIcon from '../../assets/svg/add.svg'
+
 const initialState = {
+  login: "",
   email: "",
   password: "",
 };
 
-export default function LoginScreen()
+export default function RegistrationScreen({ navigation })
 {
   const { height, width } = Dimensions.get('window');
 
@@ -35,11 +49,25 @@ export default function LoginScreen()
           height={height}
           width={width}
           preserveAspectRatio='xMidYWid slice'
-          source={require("../assets/images/signUp-bg.jpg")}
+          source={require("../../assets/images/signUp-bg.jpg")}
         >
-        <View style={styles.innerBox} height={height / 1.7}>
-            <Text style={styles.titleText}>Login</Text>
+        <View style={styles.innerBox} height={height / 1.55}>
+            <View style={styles.photoBox}></View>
+            <TouchableOpacity >
+              <AddIcon width={25} height={25} fill={'#FF6C00'} style={styles.photoBoxAddBtn}/>
+            </TouchableOpacity>
+            <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Login"
+                    textContentType={"username"}
+                    value={state.login}
+                    onChangeText={(value) =>
+                      setState((prevState) => ({ ...prevState, login: value }))
+                    }
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
                   <TextInput
                     style={styles.input}
                     placeholder="Email"
@@ -50,7 +78,7 @@ export default function LoginScreen()
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, email: value }))
                     }
-                    onFocus={() => setIsShowKeyboard(true)}
+                    onFocus={() => {setIsShowKeyboard(true), {...styles.input, borderColor: '#FF6C00', color: '#FFFFFF', }}}
                   />
               <View>
                   <TextInput
@@ -70,10 +98,10 @@ export default function LoginScreen()
               </View>
             <View style={styles.btnBox}>
                 <TouchableOpacity style={styles.btn} onPress={keyboardHide}>
-                <Text style={styles.btnText}>Login</Text>
+                <Text style={styles.btnText}>Sign up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Text style={styles.text}>Don't have an account? Sign up</Text>
+                  <Text onPress={() => navigation.navigate("Login")} style={styles.text}>Already have an account? Sign in</Text>
                 </TouchableOpacity>
             </View>
           </View>
@@ -100,10 +128,23 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
   },
+  photoBox: {
+    position: "absolute",
+    marginTop: -60,
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  photoBoxAddBtn: {
+    position: "absolute",
+    marginLeft: 47,
+    marginVertical: 20,
+  },
   titleText: {
-    marginTop: 40,
+    marginTop: 92,
     marginBottom: 15,
-    fontFamily: "Roboto-Medium",
+    // fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
@@ -116,7 +157,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: 50,
     padding: 16,
-    fontFamily: "Roboto-Regular",
+    // fontFamily: "Roboto-Regular",
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
@@ -132,14 +173,14 @@ const styles = StyleSheet.create({
     color: '#1B4371',
   },
   btnBox: {
-    marginTop: Platform.OS == "ios" ? 45 : 30,
+    marginTop: 45,
   },
   btn: {
     backgroundColor: '#FF6C00',
     borderRadius: 100,
   },
   btnText: {
-    fontFamily: "Roboto-Regular",
+    // fontFamily: "Roboto-Regular",
     color: "#ffffff",
     fontSize: 16,
     lineHeight: 19,
@@ -148,10 +189,12 @@ const styles = StyleSheet.create({
     },
   text: {
     marginTop: 18,
-    fontFamily: "Roboto-Regular",
+    // fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',
     textAlign: 'center',
   }
 });
+
+
