@@ -1,28 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TouchableOpacity  } from "react-native";
 
-import { FontAwesome, Feather } from '@expo/vector-icons';
+import { FontAwesome, Feather, AntDesign } from '@expo/vector-icons';
 
 const initialState = {
   title: "",
   location: "",
 };
 
-const CreatePostsScreen = () =>
+const CreatePostsScreen = ({navigation}) =>
 {
-  const { height, width } = Dimensions.get('window');
+    const { height, width } = Dimensions.get('window');
 
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [isSecureEntry, setSecureEntry] = useState(true);
-  const [state, setState] = useState(initialState);
+    const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+    const [isSecureEntry, setSecureEntry] = useState(true);
+    const [state, setState] = useState(initialState);
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
-  };
+    useEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.navigate("Posts")} style={{marginLeft: 16}}>
+                    <AntDesign name="arrowleft" size={24} color="#212121" />
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation]);
+
+    const keyboardHide = () => {
+        setIsShowKeyboard(false);
+        Keyboard.dismiss();
+        console.log(state);
+        setState(initialState);
+    };
 
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -59,17 +59,19 @@ export const useRoute = (isAuth) =>
           <MainTab.Screen
               name='Create post'
               component={CreatePostsScreen}
-                options={{
-                    tabBarIcon: ({ focused, size, color }) => (
-                        <AntDesign name="plus" size={13} color="#FFFFFF" 
-                            backgroundColor={"#FF6C00"} 
-                        />
-                    ),
-                // tabBarActiveTintColor:,
-                // headerShown: false,
-                }}
-            //   tabBarBadgeStyle={{color:"#FF6C00"}}
-        />
+              options={({ navigation, route }) => ({
+                tabBarIcon: ({ focused, size, color }) => (
+                  <AntDesign name="plus" size={13} color="#FFFFFF" 
+                                  backgroundColor={"#FF6C00"} 
+                              />
+                ),
+                headerLeft: () => (
+                  <TouchableOpacity style={{ marginLeft: 16 }}>
+                    <AntDesign name="arrowleft" size={24} color="#212121" />
+                  </TouchableOpacity>
+                ),
+                })}
+          />
           <MainTab.Screen
               name='Profile'
               component={ProfileScreen} 
