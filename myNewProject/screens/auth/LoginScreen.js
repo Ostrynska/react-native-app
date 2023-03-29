@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const initialState = {
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 40,
     marginBottom: 15,
-    // fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: 50,
     padding: 16,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   btnText: {
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#ffffff",
     fontSize: 16,
     lineHeight: 19,
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     },
   text: {
     marginTop: 18,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',

@@ -10,9 +10,11 @@
 // }
 
 import React, { useState } from "react";
+
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 
-import AddIcon from '../../assets/svg/add.svg'
+import { EvilIcons } from '@expo/vector-icons';
+// import AddIcon from '../../assets/svg/add.svg'
 
 const initialState = {
   login: "",
@@ -54,7 +56,7 @@ export default function RegistrationScreen({ navigation })
         <View style={styles.innerBox} height={height / 1.55}>
             <View style={styles.photoBox}></View>
             <TouchableOpacity >
-              <AddIcon width={25} height={25} fill={'#FF6C00'} style={styles.photoBoxAddBtn}/>
+              <EvilIcons name="plus" size={25} color="#FF6C00" style={styles.photoBoxAddBtn}/>
             </TouchableOpacity>
             <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 92,
     marginBottom: 15,
-    // fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     height: 50,
     padding: 16,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
@@ -180,7 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   btnText: {
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     color: "#ffffff",
     fontSize: 16,
     lineHeight: 19,
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     },
   text: {
     marginTop: 18,
-    // fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',
