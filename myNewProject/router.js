@@ -1,5 +1,7 @@
 import React from "react";
 
+import { TouchableOpacity } from "react-native";
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -40,26 +42,31 @@ export const useRoute = (isAuth) =>
                   shadowOpacity: 0.5 }
           }} >
           <MainTab.Screen
-              name='Posts'
-              component={PostsScreen}
-                options={{
-                    tabBarIcon: ({focused, size, color}) => (
-                        <Ionicons name="grid-outline" size={size} color='#212121CC' />
-                    ),
-                    // headerBackTitle: 'hello',
-                }}
+        name='Posts'
+        component={PostsScreen}
+        options={({ navigation, route }) => ({
+          tabBarIcon: ({ focused, size, color }) => (
+            <Ionicons name="grid-outline" size={size} color
+              ='#212121CC' />
+          ),
+          headerRight: () => (
+            <TouchableOpacity style={{marginRight: 10}}>
+              <Feather name="log-out" size={24} color="#BDBDBD"/>
+            </TouchableOpacity>
+          ),
+          })}
               />
           <MainTab.Screen
-              name='Create'
+              name='Create post'
               component={CreatePostsScreen}
                 options={{
                     tabBarIcon: ({ focused, size, color }) => (
-                        <AntDesign name="plus" size={13} color="#FFFFFF"
+                        <AntDesign name="plus" size={13} color="#FFFFFF" 
                             backgroundColor={"#FF6C00"} 
                         />
                     ),
                 // tabBarActiveTintColor:,
-                headerShown: false,
+                // headerShown: false,
                 }}
             //   tabBarBadgeStyle={{color:"#FF6C00"}}
         />

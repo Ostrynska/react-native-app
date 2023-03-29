@@ -1,9 +1,22 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
 
-const PostsScreen = () =>
+import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
+
+import { Feather} from '@expo/vector-icons';
+
+const PostsScreen = ({ navigation }) =>
 {
-    return (
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={{marginRight: 10}}>
+                    <Feather name="log-out" size={24} color="#BDBDBD"/>
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation]);
+
+    return(
         <View style={styles.container}>
             <View style={styles.innerBox} height={60}>
                 <View style={styles.avatarBox}></View>
@@ -23,7 +36,9 @@ const styles = StyleSheet.create({
     },
     innerBox: {
         marginHorizontal: 16,
-        marginTop: 32,
+        marginVertical: 32,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     avatarBox: {
         backgroundColor: "black",
@@ -32,8 +47,8 @@ const styles = StyleSheet.create({
         height: 60,
     },
     infoBox: {
-        marginLeft: 8,
-        alignItem: 'center',
+        marginLeft: 10,
+        justifyContent: 'center',
     },
     user: {
         fontFamily: "Roboto-Medium",
