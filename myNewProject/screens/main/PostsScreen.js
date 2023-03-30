@@ -9,7 +9,7 @@ const PostsScreen = ({ navigation }) =>
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={{marginRight: 10}}>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={{marginRight: 16}}>
                     <Feather name="log-out" size={24} color="#BDBDBD"/>
                 </TouchableOpacity>
             ),

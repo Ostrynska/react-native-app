@@ -9,14 +9,31 @@ const initialState = {
   location: "",
 };
 
-const CreatePostsScreen = ({navigation}) =>
+const CreatePostsScreen = ({ navigation }) =>
 {
     const { height, width } = Dimensions.get('window');
 
-    const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-    const [isSecureEntry, setSecureEntry] = useState(true);
     const [state, setState] = useState(initialState);
+    const [isActive, setIsActive] = useState(false)
+    const [isFocused, setIsFocused] = useState({
+        title: false,
+        location: false,
+    })
 
+    const onFocus = (inputName) =>
+    {
+        setIsFocused({
+            [inputName]: true
+        })
+    }
+
+    const onBlur = (inputName) =>
+    {
+        setIsFocused({
+            [inputName]: false
+        })
+    }
+    
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
@@ -28,10 +45,7 @@ const CreatePostsScreen = ({navigation}) =>
     }, [navigation]);
 
     const keyboardHide = () => {
-        setIsShowKeyboard(false);
         Keyboard.dismiss();
-        console.log(state);
-        setState(initialState);
     };
 
     return (
@@ -51,36 +65,41 @@ const CreatePostsScreen = ({navigation}) =>
                         </View>
                     </View>
                     <Text style={styles.postImgInf}>Upload photo</Text>
-                    <View style={styles.postForm}
-                        // height={height / 1.7}
-                    >
+                    <View style={styles.postForm}>
                             <TextInput
-                                style={styles.input}
+                                style={isFocused.title ? { ...styles.input, borderBottomColor: '#FF6C00'} : {...styles.input, fontFamily: "Roboto-Medium" }}
                                 placeholder="Title..."
+                                placeholderTextColor="#BDBDBD"
                                 inputmode={'text'}
                                 value={state.title}
                                 onChangeText={(value) =>
-                                setState((prevState) => ({ ...prevState, title: value }))
+                                    setState((prevState) => ({ ...prevState, title: value }))
                                 }
-                                onFocus={() => setIsShowKeyboard(true)}
+                                onFocus={() => onFocus('title')}
+                                onBlur={() => onBlur('title') }
                             />
                             <View style={{position: 'relative'}}>
                                 <TextInput
-                                    style={{ ...styles.input, marginTop: 32, paddingLeft: 24 }}
+                                    style={isFocused.location ? {...styles.input, borderBottomColor: '#FF6C00', marginTop: 32, paddingLeft: 24 } : { ...styles.input, marginTop: 32, paddingLeft: 24 }}
                                     placeholder="Location..."
+                                    placeholderTextColor="#BDBDBD"
                                     textContentType={"location"}
                                     value={state.location}
                                     onChangeText={(value) =>
-                                    setState((prevState) => ({ ...prevState, location: value }))
+                                        setState((prevState) => ({ ...prevState, location: value }))
                                     }
-                                    onFocus={() => setIsShowKeyboard(true)}
+                                    onFocus={() => onFocus('location')}
+                                    onBlur={() => onBlur('location')}
                                 />
                                 <View style={styles.inputIcon}>
                                     <Feather name="map-pin" size={16} color="#BDBDBD" />
                                 </View>
                             </View>
-                            <TouchableOpacity style={styles.btn} onPress={keyboardHide}>
-                                <Text style={styles.btnText}>Post</Text>
+                            <TouchableOpacity
+                                style={[styles.btn, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
+                                onPress={() => onActiveButton()}
+                            >
+                                <Text style={isActive ? { ...styles.btn, color: "#FFFFFF"} : styles.btnText}>Post</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -132,13 +151,13 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E8E8E8',
         borderBottomWidth: 1,
         fontFamily: "Roboto-Regular",
-        color: "#BDBDBD",
+        color: "#212121",
         fontSize: 16,
         lineHeight: 19,
     },
     inputIcon: {
         position: 'absolute',
-        marginTop: 31,
+        marginTop: 32, 
     },
     btn: {
         marginTop: 38,

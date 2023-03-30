@@ -50,7 +50,7 @@ export const useRoute = (isAuth) =>
               ='#212121CC' />
           ),
           headerRight: () => (
-            <TouchableOpacity style={{marginRight: 10}}>
+            <TouchableOpacity style={{marginRight: 16}}>
               <Feather name="log-out" size={24} color="#BDBDBD"/>
             </TouchableOpacity>
           ),

@@ -11,15 +11,28 @@ export default function LoginScreen({ navigation })
 {
   const { height, width } = Dimensions.get('window');
 
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isSecureEntry, setSecureEntry] = useState(true);
   const [state, setState] = useState(initialState);
 
+  const [isFocused, setIsFocused] = useState({
+    email: false,
+    password: false,
+  })
+
+  const onFocus = (inputName) => {
+    setIsFocused({
+      [inputName]: true
+    })
+  }
+
+  const onBlur = (inputName) => {
+    setIsFocused({
+      [inputName]: false
+    })
+  }
+
   const keyboardHide = () => {
-    setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
   };
 
   return (
@@ -41,9 +54,10 @@ export default function LoginScreen({ navigation })
         <View style={styles.innerBox} height={height / 1.7}>
             <Text style={styles.titleText}>Login</Text>
                 <View style={styles.form}>
-                  <TextInput
-                    style={styles.input}
+              <TextInput
+                    style={isFocused.email ? [styles.input, styles.inputFocused] : styles.input}
                     placeholder="Email"
+                    placeholderTextColor="#BDBDBD"
                     inputmode={'email'}
                     textContentType={"emailAddress"}
                     keyboardType={'email-address'}
@@ -51,12 +65,14 @@ export default function LoginScreen({ navigation })
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, email: value }))
                     }
-                    onFocus={() => setIsShowKeyboard(true)}
+                    onFocus={() => onFocus('email')}
+                    onBlur={() => onBlur('email')}
                   />
               <View>
-                  <TextInput
-                    style={{ ...styles.input, position: "relative" }}
+                <TextInput
+                    style={isFocused.password ? [styles.input, styles.inputFocused] : {...styles.input, position: 'relative'}}
                     placeholder="Password"
+                    placeholderTextColor="#BDBDBD"
                     textContentType={"password"}
                     secureTextEntry={isSecureEntry}
                     maxLength={10}
@@ -64,7 +80,8 @@ export default function LoginScreen({ navigation })
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, password: value }))
                     }
-                    onFocus={() => setIsShowKeyboard(true)}
+                    onFocus={() => onFocus('password')}
+                    onBlur={() => onBlur('password')}
                 />
                 <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
                   <Text style={styles.textSecure}>{isSecureEntry ? "Show" : "Hide"}</Text></TouchableOpacity>
@@ -97,7 +114,7 @@ const styles = StyleSheet.create({
   innerBox: {
     position: "relative",
     alignItems: 'center',
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
   },
@@ -116,15 +133,19 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 16,
     height: 50,
-    padding: 16,
+    padding: 15,
     fontFamily: "Roboto-Regular",
-    color: "#BDBDBD",
+    color: "#212121",
     fontSize: 16,
     lineHeight: 19,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "#E8E8E8",
+  },
+  inputFocused: {
+    borderColor: '#FF6C00',
+    backgroundColor: '#FFFFFF'
   },
   textSecure: {
     position: "absolute",

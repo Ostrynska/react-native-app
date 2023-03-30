@@ -14,7 +14,6 @@ import React, { useState } from "react";
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import { EvilIcons } from '@expo/vector-icons';
-// import AddIcon from '../../assets/svg/add.svg'
 
 const initialState = {
   login: "",
@@ -26,15 +25,29 @@ export default function RegistrationScreen({ navigation })
 {
   const { height, width } = Dimensions.get('window');
 
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isSecureEntry, setSecureEntry] = useState(true);
   const [state, setState] = useState(initialState);
+  const [isFocused, setIsFocused] = useState({
+      login: false,
+      email: false,
+      password: false,
+    })
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
+    const onFocus = (inputName) => {
+      setIsFocused({
+        [inputName]: true
+      })
+    }
+
+    const onBlur = (inputName) => {
+      setIsFocused({
+        [inputName]: false
+      })
+    }
+
+  const keyboardHide = () =>
+  {
     Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
   };
 
   return (
@@ -61,18 +74,21 @@ export default function RegistrationScreen({ navigation })
             <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
                   <TextInput
-                    style={styles.input}
+                    style={isFocused.login ? [styles.input, styles.inputFocused] : styles.input}
                     placeholder="Login"
+                    placeholderTextColor="#BDBDBD"
                     textContentType={"username"}
                     value={state.login}
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, login: value }))
                     }
-                    onFocus={() => setIsShowKeyboard(true)}
+                    onFocus={() => onFocus('login')}
+                    onBlur={() => onBlur('login')}
                   />
                   <TextInput
-                    style={styles.input}
+                    style={isFocused.email ? [styles.input, styles.inputFocused] : styles.input}
                     placeholder="Email"
+                    placeholderTextColor="#BDBDBD"
                     inputmode={'email'}
                     textContentType={"emailAddress"}
                     keyboardType={'email-address'}
@@ -80,12 +96,14 @@ export default function RegistrationScreen({ navigation })
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, email: value }))
                     }
-                    onFocus={() => {setIsShowKeyboard(true), {...styles.input, borderColor: '#FF6C00', color: '#FFFFFF', }}}
+                    onFocus={() => onFocus('email')}
+                    onBlur={() => onBlur('email')}
                   />
               <View>
                   <TextInput
-                    style={{ ...styles.input, position: "relative" }}
+                    style={isFocused.password ? [styles.input, styles.inputFocused] : {...styles.input, position: 'relative'}}
                     placeholder="Password"
+                    placeholderTextColor="#BDBDBD"
                     textContentType={"password"}
                     secureTextEntry={isSecureEntry}
                     maxLength={10}
@@ -93,7 +111,8 @@ export default function RegistrationScreen({ navigation })
                     onChangeText={(value) =>
                       setState((prevState) => ({ ...prevState, password: value }))
                     }
-                    onFocus={() => setIsShowKeyboard(true)}
+                    onFocus={() => onFocus('password')}
+                    onBlur={() => onBlur('password')}
                 />
                 <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
                   <Text style={styles.textSecure}>{isSecureEntry ? "Show" : "Hide"}</Text></TouchableOpacity>
@@ -160,13 +179,17 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 16,
     fontFamily: "Roboto-Regular",
-    color: "#BDBDBD",
+    color: "#212121",
     fontSize: 16,
     lineHeight: 19,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "#E8E8E8",
+  },
+  inputFocused: {
+    borderColor: '#FF6C00',
+    backgroundColor: '#FFFFFF'
   },
   textSecure: {
     position: "absolute",
