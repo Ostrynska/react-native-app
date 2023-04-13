@@ -14,7 +14,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
+// import Constants from 'expo-constants';
 
 import { EvilIcons } from '@expo/vector-icons';
 
@@ -48,16 +48,16 @@ export default function RegistrationScreen({ navigation })
         [inputName]: false
       })
     }
-  
-  useEffect(async () =>
-  {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      // if (status !== 'granted')  {
-      //   alert('Permisson denied!')
-      // }
-    }
-  }, [])
+
+  // useEffect(async () =>
+  // {
+  //   if (Platform.OS !== 'web') {
+  //     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //     // if (status !== 'granted')  {
+  //     //   alert('Permisson denied!')
+  //     // }
+  //   }
+  // }, [])
 
   const PickProfileImage = async () =>
   {
@@ -67,10 +67,14 @@ export default function RegistrationScreen({ navigation })
       aspect: [4, 3],
       quality: 1
     })
-    console.log(result);
     if (!result.canceled) {
-      setProfileImage(result.uri)
+      setProfileImage(result.assets[0].uri)
     }
+  }
+
+  const RemoveProfileImage = () =>
+  {
+    setProfileImage(false)
   }
 
   const keyboardHide = () =>
@@ -99,11 +103,15 @@ export default function RegistrationScreen({ navigation })
               <Image
                 source={{ uri: profileImage }}
                 style={{...styles.photoBox, width: 120, height: 120 }} />
-              : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }}></View>}
-            <TouchableOpacity onPress={PickProfileImage} >
-              {/* <View style={{...styles.photoBoxAddBtn, width: 25, height: 25, backgroundColor: '#FFFFFF', borderRadius: 100}}></View> */}
-              <EvilIcons name="plus" size={25} color="#FF6C00" style={styles.photoBoxAddBtn}/>
-            </TouchableOpacity>
+              : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }} />}
+            {profileImage ?
+              <TouchableOpacity onPress={RemoveProfileImage} >
+                <EvilIcons name="close-o" size={25} color="#E8E8E8" fill='ffffff' style={styles.photoBoxBtn}/>
+            </TouchableOpacity> :
+              <TouchableOpacity onPress={PickProfileImage}>
+                <EvilIcons name="plus" size={25} color="#FF6C00" style={styles.photoBoxBtn} />
+              </TouchableOpacity>
+            }
             <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
                   <TextInput
@@ -189,9 +197,9 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 16,
   },
-  photoBoxAddBtn: {
+  photoBoxBtn: {
     position: "absolute",
-    marginLeft: 47,
+    marginLeft: 46,
     marginVertical: 20,
   },
   titleText: {
