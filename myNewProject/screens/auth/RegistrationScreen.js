@@ -16,7 +16,7 @@ import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, D
 import * as ImagePicker from 'expo-image-picker';
 // import Constants from 'expo-constants';
 
-import { EvilIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const initialState = {
   login: "",
@@ -106,10 +106,14 @@ export default function RegistrationScreen({ navigation })
               : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }} />}
             {profileImage ?
               <TouchableOpacity onPress={RemoveProfileImage} >
-                <EvilIcons name="close-o" size={25} color="#E8E8E8" fill='ffffff' style={styles.photoBoxBtn}/>
+              <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
+                  <AntDesign name="close" size={16} color="#BDBDBD"/>
+                </View>
             </TouchableOpacity> :
               <TouchableOpacity onPress={PickProfileImage}>
-                <EvilIcons name="plus" size={25} color="#FF6C00" style={styles.photoBoxBtn} />
+                <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
+                  <AntDesign name="plus" size={16} color="#FF6C00"/>
+                </View>
               </TouchableOpacity>
             }
             <Text style={styles.titleText}>Create Account</Text>
@@ -199,8 +203,17 @@ const styles = StyleSheet.create({
   },
   photoBoxBtn: {
     position: "absolute",
-    marginLeft: 46,
-    marginVertical: 20,
+    alignContent: 'center', 
+    left: 45,
+    marginVertical: 15,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderRadius: 50,
+    width: 23,
+    height: 23,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   titleText: {
     marginTop: 92,
@@ -217,7 +230,7 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 16,
     height: 50,
-    padding: 16,
+    padding: 15,
     fontFamily: "Roboto-Regular",
     color: "#212121",
     fontSize: 16,
