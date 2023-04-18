@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "myNewProject",
-    "slug": "mynewproject",
+    "name": "Social media app",
+    "slug": "socialMediaApp",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ostrynska.mynewproject"
+      "bundleIdentifier": "com.ostrynska.socialMediaApp"
     },
     "android": {
       "adaptiveIcon": {
