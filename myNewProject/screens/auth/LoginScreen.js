@@ -33,6 +33,7 @@ export default function LoginScreen({ navigation })
 
   const keyboardHide = () => {
     Keyboard.dismiss();
+    console.log(state);
   };
 
   return (
