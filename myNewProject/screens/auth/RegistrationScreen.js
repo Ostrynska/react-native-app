@@ -80,6 +80,7 @@ export default function RegistrationScreen({ navigation })
   const keyboardHide = () =>
   {
     Keyboard.dismiss();
+    console.log(state);
   };
 
   return (
