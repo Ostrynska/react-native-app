@@ -21,6 +21,7 @@
     "expo-image-picker": "^14.1.1",
     "expo-splash-screen": "^0.18.1",
     "expo-status-bar": "~1.4.4",
+    "expo-updates": "~0.16.4",
     "react": "18.2.0",
     "react-native": "0.71.4",
     "react-native-gesture-handler": "~2.9.0",
@@ -34,7 +35,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "metro": "^0.76.0",
-    "metro-core": "^0.76.0"
+    "metro-core": "^0.76.0",
+    "prettier": "^2.8.7"
   },
   "private": true
 }
