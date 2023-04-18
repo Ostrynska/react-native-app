@@ -106,7 +106,7 @@ export default function RegistrationScreen({ navigation })
               : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }} />}
             {profileImage ?
               <TouchableOpacity onPress={RemoveProfileImage} >
-              <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
+              <View style={{...styles.photoBoxBtn, borderColor: "#BDBDBD"}}>
                   <AntDesign name="close" size={16} color="#BDBDBD"/>
                 </View>
             </TouchableOpacity> :
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   photoBoxBtn: {
     position: "absolute",
     alignContent: 'center', 
-    left: 45,
+    left: 48,
     marginVertical: 15,
     backgroundColor: '#ffffff',
     borderWidth: 1,
