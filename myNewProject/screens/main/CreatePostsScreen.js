@@ -108,7 +108,7 @@ const CreatePostsScreen = ({ navigation }) =>
             />
             </View>}
                     <TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
-                        <Ionicons name="camera-reverse" size={20} color="#FFFFFF" />
+                        <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
                         <FontAwesome name="camera" size={24} color="#FFFFFF" />
