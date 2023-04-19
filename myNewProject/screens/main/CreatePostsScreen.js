@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TouchableOpacity  } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Button, TouchableOpacity } from "react-native";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { FontAwesome, Feather, AntDesign } from '@expo/vector-icons';
+import { Camera, CameraType } from "expo-camera";
+
+import { FontAwesome, Feather, AntDesign, Ionicons } from '@expo/vector-icons';
 
 const initialState = {
   title: "",
@@ -13,12 +16,27 @@ const CreatePostsScreen = ({ navigation }) =>
 {
     const { height, width } = Dimensions.get('window');
 
+    const [camera, setCamera] = useState(null);
+    const [photo, setPhoto] = useState(null);
+    const [type, setType] = useState(CameraType.back);
+    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [isOpenCamera, setIsOpenCamera] = useState(false);
+    console.log(isOpenCamera);
     const [state, setState] = useState(initialState);
-    const [isActive, setIsActive] = useState(false)
+    const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
         title: false,
         location: false,
-    })
+    });
+
+    const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    setPhoto(photo.uri);
+  };
+
+//   const sendPhoto = () => {
+//     navigation.navigate("Posts", { photo });
+//   };
 
     const onFocus = (inputName) =>
     {
@@ -48,6 +66,22 @@ const CreatePostsScreen = ({ navigation }) =>
         Keyboard.dismiss();
     };
 
+    const toggleCameraType = () => {
+        setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+    }
+
+    if (!permission) {
+        return <View />;
+    }
+    if (!permission.granted) {
+        return (
+        <View style={styles.container}>
+            <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+            <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
@@ -57,14 +91,34 @@ const CreatePostsScreen = ({ navigation }) =>
             style={styles.container}
             keyboardVerticalOffset={-150}
         >
-            <View style={styles.container}>
-                <View style={styles.innerBox} height={60}>
-                    <View style={styles.postImg} height={240}>
-                        <View style={styles.postImgAdd}>
+                <View style={styles.container}>
+                    <View style={styles.innerBox} height={60}>
+                        {isOpenCamera === false ? (
+                        <View style={styles.postImg} height={240}>
+                        <TouchableOpacity style={styles.postImgAdd} onPress={() => setIsOpenCamera((prev) => !prev)}> 
                             <FontAwesome name="camera" size={24} color="#BDBDBD" />
-                        </View>
-                    </View>
-                    <Text style={styles.postImgInf}>Upload photo</Text>
+                        </TouchableOpacity>
+                        </View> 
+                        ) : (
+                                <Camera style={styles.camera} ref={setCamera} type={type}>
+                            {photo && <View style={styles.takePhotoContainer}>
+              <Image
+                source={{ uri: photo }}
+                style={{ height: 100, width: 100, borderRadius: 8 }}
+            />
+            </View>}
+                    <TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
+                        <Ionicons name="camera-reverse" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
+                        <FontAwesome name="camera" size={24} color="#FFFFFF" />
+                    </TouchableOpacity>
+                </Camera>
+                        )}
+                    <TouchableOpacity >
+                    <Text style={photo ? {...styles.postImgInf, color: '#FF6C00'} : styles.postImgInf}>Upload photo</Text>
+                        </TouchableOpacity>
+
                     <View style={styles.postForm}>
                             <TextInput
                                 style={isFocused.title ? { ...styles.input, borderBottomColor: '#FF6C00'} : {...styles.input, fontFamily: "Roboto-Medium" }}
@@ -95,9 +149,10 @@ const CreatePostsScreen = ({ navigation }) =>
                                     <Feather name="map-pin" size={16} color="#BDBDBD" />
                                 </View>
                             </View>
+
                             <TouchableOpacity
                                 style={[styles.btn, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
-                                onPress={() => onActiveButton()}
+                                // onPress={() => onActiveButton()}
                             >
                                 <Text style={isActive ? { ...styles.btn, color: "#FFFFFF"} : styles.btnText}>Post</Text>
                             </TouchableOpacity>
@@ -117,7 +172,7 @@ const styles = StyleSheet.create({
     innerBox: {
         marginHorizontal: 16,
         marginVertical: 32,
-
+        backgroundColor: '#FFFFFF',
     },
     postImg: {
         width: "100%",
@@ -135,6 +190,27 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 50,
+    },
+    camera: {
+        width: "100%",
+        height: 240,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "flex-end",
+    },
+    snapContainer: {
+        borderWidth: 2,
+        borderColor: "#ffffff",
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    cameraType: {
+        left: 173,
+        bottom: 140,
     },
     postImgInf: {
         marginTop: 14,
@@ -171,7 +247,15 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         textAlign: 'center',
         padding: 16,
-        },
+    },
+    takePhotoContainer: {
+        position: "absolute",
+        top: 50,
+        left: 10,
+        borderColor: "#fff",
+        borderWidth: 1,
+        borderRadius: 8,
+    },
 })
 
 export default CreatePostsScreen;
