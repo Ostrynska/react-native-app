@@ -12,13 +12,23 @@
 import React, { useState, useEffect } from "react";
 
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
+import { useDispatch } from 'react-redux'
 
 import * as ImagePicker from 'expo-image-picker';
 // import Constants from 'expo-constants';
 
 import { AntDesign } from '@expo/vector-icons';
 
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { authSignUpUser } from "../../redux/auth/authOperations";
+
 const initialState = {
+  avatar: "",
   login: "",
   email: "",
   password: "",
@@ -32,22 +42,24 @@ export default function RegistrationScreen({ navigation })
   const [state, setState] = useState(initialState);
   const [profileImage, setProfileImage] = useState(null);
   const [isFocused, setIsFocused] = useState({
-      login: false,
-      email: false,
-      password: false,
-    })
+    login: false,
+    email: false,
+    password: false,
+  });
 
-    const onFocus = (inputName) => {
+  const dispatch = useDispatch(); 
+
+  const onFocus = (inputName) => {
       setIsFocused({
         [inputName]: true
       })
-    }
+  }
 
-    const onBlur = (inputName) => {
+  const onBlur = (inputName) => {
       setIsFocused({
         [inputName]: false
       })
-    }
+  }
 
   // useEffect(async () =>
   // {
@@ -66,7 +78,8 @@ export default function RegistrationScreen({ navigation })
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1
-    })
+    });
+    setState((prevState) => ({ ...prevState, avatar: result }))
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri)
     }
@@ -77,10 +90,11 @@ export default function RegistrationScreen({ navigation })
     setProfileImage(false)
   }
 
-  const keyboardHide = () =>
+  const handleSubmit = () =>
   {
     Keyboard.dismiss();
-    console.log(state);
+    setState(initialState);
+    dispatch(authSignUpUser(state))
   };
 
   return (
@@ -164,7 +178,7 @@ export default function RegistrationScreen({ navigation })
                   <Text style={styles.textSecure}>{isSecureEntry ? "Show" : "Hide"}</Text></TouchableOpacity>
               </View>
             <View style={styles.btnBox}>
-                <TouchableOpacity style={styles.btn} onPress={keyboardHide}>
+                <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
                 <Text style={styles.btnText}>Sign up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>

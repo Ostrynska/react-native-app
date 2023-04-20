@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 
 import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Button, TouchableOpacity } from "react-native";
 // import { TouchableOpacity } from "react-native-gesture-handler";
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { Camera, CameraType } from "expo-camera";
+import * as Location from 'expo-location';
 
 import { FontAwesome, Feather, AntDesign, Ionicons } from '@expo/vector-icons';
 
 const initialState = {
-  title: "",
-  location: "",
+    photo: "",
+    title: "",
+    location: "",
 };
 
 const CreatePostsScreen = ({ navigation }) =>
@@ -17,11 +20,12 @@ const CreatePostsScreen = ({ navigation }) =>
     const { height, width } = Dimensions.get('window');
 
     const [camera, setCamera] = useState(null);
-    const [photo, setPhoto] = useState(null);
-    const [type, setType] = useState(CameraType.back);
-    const [permission, requestPermission] = Camera.useCameraPermissions();
     const [isOpenCamera, setIsOpenCamera] = useState(false);
-    console.log(isOpenCamera);
+    const [type, setType] = useState(CameraType.back);
+    const [permission, requestPermission] = Camera.useCameraPermissions();    const [photo, setPhoto] = useState(null);
+    // const [location, setLocation] = useState(null);
+    // const [errorMsg, setErrorMsg] = useState(null);
+    // console.log(isOpenCamera);
     const [state, setState] = useState(initialState);
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
@@ -30,13 +34,21 @@ const CreatePostsScreen = ({ navigation }) =>
     });
 
     const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
+        const photo = await camera.takePictureAsync();
+        const location = await Location.getCurrentPositionAsync();
+        setPhoto(photo.uri);
   };
 
 //   const sendPhoto = () => {
 //     navigation.navigate("Posts", { photo });
 //   };
+
+    const getTabBarVisibility = (route) => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        const hideOnScreens = [SCREENS.REVIEW_ORDER, SCREENS.ORDER_PAYMENT]; // put here name of screen where you want to hide tabBar
+        return hideOnScreens.indexOf(routeName) <= -1;
+    };
+    
 
     const onFocus = (inputName) =>
     {
@@ -62,9 +74,28 @@ const CreatePostsScreen = ({ navigation }) =>
         });
     }, [navigation]);
 
-    const keyboardHide = () => {
-        Keyboard.dismiss();
-    };
+    // useEffect(() => {
+    //     (async () => {
+        
+    //     let { status } = await Location.requestForegroundPermissionsAsync();
+    //     if (status !== 'granted') {
+    //         setErrorMsg('Permission to access location was denied');
+    //         return;
+    //     }
+
+    //     let location = await Location.getCurrentPositionAsync({});
+    //     setLocation(location);
+    //     })();
+    // }, []);
+
+  const handleSubmit = () => {
+    setState(initialState);
+    navigation.navigate("Posts", { photo });
+  };
+    
+  const handleReset = () => {
+      setState(initialState)
+  };
 
     const toggleCameraType = () => {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
@@ -116,8 +147,8 @@ const CreatePostsScreen = ({ navigation }) =>
                 </Camera>
                         )}
                     <TouchableOpacity >
-                    <Text style={photo ? {...styles.postImgInf, color: '#FF6C00'} : styles.postImgInf}>Upload photo</Text>
-                        </TouchableOpacity>
+                        <Text style={styles.postImgInf}>Upload photo</Text>
+                    </TouchableOpacity>
 
                     <View style={styles.postForm}>
                             <TextInput
@@ -152,9 +183,15 @@ const CreatePostsScreen = ({ navigation }) =>
 
                             <TouchableOpacity
                                 style={[styles.btn, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
-                                // onPress={() => onActiveButton()}
+                                onPress={() => handleSubmit()}
                             >
                                 <Text style={isActive ? { ...styles.btn, color: "#FFFFFF"} : styles.btnText}>Post</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.btnReset, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
+                                onPress={() => handleReset()}
+                            >
+                                <Feather name="trash-2" size={24} color="#BDBDBD" style={{marginVertical: 6}} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -255,6 +292,14 @@ const styles = StyleSheet.create({
         borderColor: "#fff",
         borderWidth: 1,
         borderRadius: 8,
+    },
+    btnReset: {
+        width: 70,
+        height: 40,
+        borderRadius: 20,
+        alignSelf: 'center',
+        alignItems: 'center',
+        top: 210,
     },
 })
 

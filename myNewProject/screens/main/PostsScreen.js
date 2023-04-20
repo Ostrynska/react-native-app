@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from 'react-redux'
 
 import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
 
-import { Feather} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const PostsScreen = ({ navigation }) =>
 {
+    const dispatch = useDispatch(); 
+    
+    const signOut = () =>
+    {
+    dispatch(authSignOutUser());
+  };
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={{marginRight: 16}}>
+                <TouchableOpacity onPress={signOut} style={{marginRight: 16}}>
                     <Feather name="log-out" size={24} color="#BDBDBD"/>
                 </TouchableOpacity>
             ),

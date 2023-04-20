@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux'
 
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native";
+
+import { authSignInUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   email: "",
@@ -17,7 +20,9 @@ export default function LoginScreen({ navigation })
   const [isFocused, setIsFocused] = useState({
     email: false,
     password: false,
-  })
+  });
+
+  const dispatch = useDispatch(); 
 
   const onFocus = (inputName) => {
     setIsFocused({
@@ -31,9 +36,10 @@ export default function LoginScreen({ navigation })
     })
   }
 
-  const keyboardHide = () => {
+  const handleSubmit = () => {
     Keyboard.dismiss();
-    console.log(state);
+    dispatch(authSignInUser(state));
+    setState(initialState);
   };
 
   return (
@@ -88,7 +94,7 @@ export default function LoginScreen({ navigation })
                   <Text style={styles.textSecure}>{isSecureEntry ? "Show" : "Hide"}</Text></TouchableOpacity>
               </View>
             <View style={styles.btnBox}>
-                <TouchableOpacity style={styles.btn} onPress={keyboardHide}>
+                <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
                 <Text style={styles.btnText}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>

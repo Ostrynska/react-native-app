@@ -20,14 +20,14 @@ export const useRoute = (isAuth) =>
 {
   if (!isAuth) {
     return (
-      <AuthStack.Navigator initialRouteName="Registration" >
-        <AuthStack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{ headerShown: false }} />
+      <AuthStack.Navigator initialRouteName="Login" >
         <AuthStack.Screen
           name="Login"
           component={LoginScreen}
+          options={{ headerShown: false }} />
+        <AuthStack.Screen
+          name="Registration"
+          component={RegistrationScreen}
           options={{ headerShown: false }} />
       </AuthStack.Navigator>
     )
@@ -45,7 +45,7 @@ export const useRoute = (isAuth) =>
           <MainTab.Screen
             name='Posts'
             component={PostsScreen}
-            options={({ navigation, route }) => ({
+        options={({ navigation, route }) => ({
             tabBarIcon: ({ focused, size, color }) => (
               <Ionicons name="grid-outline" size={size} color='#212121CC' style={{ left: 40, marginTop: 10 }}
               />
@@ -65,7 +65,8 @@ export const useRoute = (isAuth) =>
                 <View  style={{ width: 70, height: 40, borderRadius: 20, backgroundColor: "#FF6C00", alignContent: 'center', alignItems: 'center', marginTop: 9 }}>
                   <AntDesign name="plus" size={16} color="#FFFFFF" style={{marginVertical: 12}} />
                 </View>
-            ),
+              ),
+            tabBarStyle: {display: 'none'},
             headerLeft: () => (
               <TouchableOpacity style={{ marginLeft: 16 }}>
                 <AntDesign name="arrowleft" size={24} color="#212121" />
