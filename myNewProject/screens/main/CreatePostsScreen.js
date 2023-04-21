@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Button, TouchableOpacity, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Button, TouchableOpacity, ImageBackground } from "react-native";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { Camera, CameraType } from "expo-camera";
 import * as Location from 'expo-location';
 
-import { FontAwesome, Feather, AntDesign, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
+
+import * as ImagePicker from 'expo-image-picker';
 
 const initialState = {
     title: "",
@@ -105,6 +107,20 @@ const CreatePostsScreen = ({ navigation }) =>
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
     }
 
+    const takePhotoFromLibrary = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1
+        });
+        setPhoto((prevState) => ({ ...prevState, photo: result }))
+        if (!result.canceled) {
+        setPhoto(result.assets[0].uri)
+        }
+        setIsOpenCamera(false)
+    }
+
     if (!permission) {
         return <View />;
     }
@@ -128,31 +144,28 @@ const CreatePostsScreen = ({ navigation }) =>
         >
                 <View style={styles.container}>
                     <View style={styles.innerBox} height={60}>
-                        <ImageBackground
-                        style={!photo ? {...styles.postImg} : {...styles.takePhotoContainer}}
+                        {isOpenCamera === false ?
+                            <ImageBackground
+                        style={photo === null ? [styles.postImg] : {...styles.takePhotoContainer, borderRadius: 8}}
                         source={{ uri: photo }}
                         >
-                            <TouchableOpacity style={styles.postImgAdd} onPress={openCamera}>
-                                <FontAwesome name="camera" size={24} color="#BDBDBD" />
+                            <TouchableOpacity style={photo ? {...styles.postImgAdd, backgroundColor: '#FFFFFF4D'} : [styles.postImgAdd]} onPress={openCamera}>
+                                <FontAwesome name="camera" size={24} color={photo ?  "#FFFFFF" :"#BDBDBD"} />
                             </TouchableOpacity>
-                        </ImageBackground>
+                        </ImageBackground> : null}
 
                         {isOpenCamera === true && <Camera style={styles.camera} ref={setCamera} type={type}>
                                 <TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
-                                    <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
+                                <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
+                            </TouchableOpacity>
+                                <TouchableOpacity onPress={takePhotoFromLibrary} style={styles.libraryPhoto} >
+                                <MaterialIcons name="photo-library" size={24} color="#FFFFFF" />
                                 </TouchableOpacity>
                                     <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
                                         <FontAwesome name="camera" size={24} color="#FFFFFF" />
                                     </TouchableOpacity>
                             </Camera>}
-                        {/* {photo && <View style={styles.takePhotoContainer}>
-                            <Image
-                                source={{ uri: photo }}
-                                style={{ height: 140, width: 140, borderRadius: 8 }}
-                            />
-                        </View>} */}
                 {photo ? <Text style={styles.postImgInf}>Edit photo</Text> : <Text style={styles.postImgInf}>Upload photo</Text>}
-                    {/* </TouchableOpacity> */}
 
                     <View style={styles.postForm}>
                             <TextInput
@@ -186,13 +199,13 @@ const CreatePostsScreen = ({ navigation }) =>
                             </View>
 
                             <TouchableOpacity
-                                style={[styles.btn, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
+                                style={styles.btn}
                                 onPress={() => handleSubmit()}
                             >
-                                <Text style={isActive ? { ...styles.btn, color: "#FFFFFF"} : styles.btnText}>Post</Text>
+                                <Text style={styles.btnText}>Post</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[styles.btnReset, { backgroundColor: isActive ? '#FF6C00' : '#F6F6F6' }]}
+                                style={styles.btnReset}
                                 onPress={() => handleReset()}
                             >
                                 <Feather name="trash-2" size={24} color="#BDBDBD" style={{marginVertical: 6}} />
@@ -234,7 +247,6 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     camera: {
-        // bottom: 238,
         width: "100%",
         height: 240,
         borderRadius: 8,
@@ -247,20 +259,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
+        borderColor: '#ffffff',
+        borderWidth: 1,
     },
     snapContainer: {
-        borderWidth: 2,
-        borderColor: "#ffffff",
-        width: 50,
-        height: 50,
+        backgroundColor: '#FFFFFF4D',
+        width: 55,
+        height: 55,
         borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 20,
+        marginBottom: 15,
     },
     cameraType: {
-        left: 173,
-        bottom: 140,
+        left: '45%',
+        bottom: '50%',
+    },
+    libraryPhoto: {
+        right: '42%',
+        top: '17%',
     },
     postImgInf: {
         marginTop: 14,
@@ -306,6 +323,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         top: 210,
+        backgroundColor: '#F6F6F6',
     },
 })
 
