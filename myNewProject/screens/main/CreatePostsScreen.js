@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Button, TouchableOpacity, ImageBackground } from "react-native";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
@@ -10,7 +10,6 @@ import * as Location from 'expo-location';
 import { FontAwesome, Feather, AntDesign, Ionicons } from '@expo/vector-icons';
 
 const initialState = {
-    photo: "",
     title: "",
     location: "",
 };
@@ -22,10 +21,9 @@ const CreatePostsScreen = ({ navigation }) =>
     const [camera, setCamera] = useState(null);
     const [isOpenCamera, setIsOpenCamera] = useState(false);
     const [type, setType] = useState(CameraType.back);
-    const [permission, requestPermission] = Camera.useCameraPermissions();    const [photo, setPhoto] = useState(null);
+    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [photo, setPhoto] = useState(null);
     // const [location, setLocation] = useState(null);
-    // const [errorMsg, setErrorMsg] = useState(null);
-    // console.log(isOpenCamera);
     const [state, setState] = useState(initialState);
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
@@ -34,10 +32,10 @@ const CreatePostsScreen = ({ navigation }) =>
     });
 
     const takePhoto = async () => {
-        const photo = await camera.takePictureAsync();
-        const location = await Location.getCurrentPositionAsync();
-        setPhoto(photo.uri);
-  };
+        const { uri } = await camera.takePictureAsync();
+        // const location = await Location.getCurrentPositionAsync();
+        setPhoto(uri);
+    };
 
 //   const sendPhoto = () => {
 //     navigation.navigate("Posts", { photo });
@@ -45,10 +43,9 @@ const CreatePostsScreen = ({ navigation }) =>
 
     const getTabBarVisibility = (route) => {
         const routeName = getFocusedRouteNameFromRoute(route);
-        const hideOnScreens = [SCREENS.REVIEW_ORDER, SCREENS.ORDER_PAYMENT]; // put here name of screen where you want to hide tabBar
+        const hideOnScreens = [SCREENS.REVIEW_ORDER, SCREENS.ORDER_PAYMENT];
         return hideOnScreens.indexOf(routeName) <= -1;
     };
-    
 
     const onFocus = (inputName) =>
     {
@@ -93,8 +90,14 @@ const CreatePostsScreen = ({ navigation }) =>
     navigation.navigate("Posts", { photo });
   };
     
+    const openCamera = () => {
+        setIsOpenCamera((prev) => !prev);
+        console.log('isOpenCamera', isOpenCamera);
+  };
+    
   const handleReset = () => {
-      setState(initialState)
+    setState(initialState);
+    setPhoto(null);
   };
 
     const toggleCameraType = () => {
@@ -106,10 +109,10 @@ const CreatePostsScreen = ({ navigation }) =>
     }
     if (!permission.granted) {
         return (
-        <View style={styles.container}>
-            <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <>
+            <Text style={{ textAlign: 'center', marginVertical: '50%' }}>We need your permission to show the camera</Text>
             <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      </>
     );
   }
 
@@ -124,31 +127,47 @@ const CreatePostsScreen = ({ navigation }) =>
         >
                 <View style={styles.container}>
                     <View style={styles.innerBox} height={60}>
-                        {isOpenCamera === false ? (
+                        <ImageBackground
+                        style={!photo && {...styles.postImg}}
+                        source={{ uri: photo }}
+                        >
+                        <TouchableOpacity style={styles.postImgAdd} onPress={openCamera}>
+                            <FontAwesome name="camera" size={24} color="#BDBDBD" />
+                            </TouchableOpacity>
+                        <Camera style={styles.camera} ref={setCamera} type={type}>
+                    {/* {!photo && <><TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
+                        <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
+                        <FontAwesome name="camera" size={24} color="#FFFFFF" />
+                                    </TouchableOpacity></>} */}
+                        </Camera>
+                        </ImageBackground>
+                        {/* {isOpenCamera === false ? (
                         <View style={styles.postImg} height={240}>
                         <TouchableOpacity style={styles.postImgAdd} onPress={() => setIsOpenCamera((prev) => !prev)}> 
                             <FontAwesome name="camera" size={24} color="#BDBDBD" />
                         </TouchableOpacity>
                         </View> 
                         ) : (
-                                <Camera style={styles.camera} ref={setCamera} type={type}>
-                            {photo && <View style={styles.takePhotoContainer}>
-              <Image
-                source={{ uri: photo }}
-                style={{ height: 100, width: 100, borderRadius: 8 }}
-            />
-            </View>}
-                    <TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
+                        <Camera style={styles.camera} ref={setCamera} type={type}>
+                        {photo && <View style={styles.takePhotoContainer}>
+                            <Image
+                                source={{ uri: photo }}
+                                style={{ height: 140, width: 140, borderRadius: 8 }}
+                            />
+                        </View>}
+                    {!photo && <><TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
                         <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
                         <FontAwesome name="camera" size={24} color="#FFFFFF" />
-                    </TouchableOpacity>
+                    </TouchableOpacity></>}
                 </Camera>
-                        )}
-                    <TouchableOpacity >
-                        <Text style={styles.postImgInf}>Upload photo</Text>
-                    </TouchableOpacity>
+                        )} */}
+                    {/* <TouchableOpacity > */}
+                {photo ? <Text style={styles.postImgInf}>Edit photo</Text> : <Text style={styles.postImgInf}>Upload photo</Text>}
+                    {/* </TouchableOpacity> */}
 
                     <View style={styles.postForm}>
                             <TextInput
@@ -213,6 +232,7 @@ const styles = StyleSheet.create({
     },
     postImg: {
         width: "100%",
+        height: 240,
         backgroundColor: "#F6F6F6",
         borderRadius: 8,
         borderColor: "#E8E8E8",
@@ -234,6 +254,14 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: "center",
         justifyContent: "flex-end",
+    },
+    takePhotoContainer: {
+        position: "absolute",
+        top: 50,
+        left: 50,
+        borderColor: "#fff",
+        borderWidth: 1,
+        borderRadius: 8,
     },
     snapContainer: {
         borderWidth: 2,
@@ -285,14 +313,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 16,
     },
-    takePhotoContainer: {
-        position: "absolute",
-        top: 50,
-        left: 10,
-        borderColor: "#fff",
-        borderWidth: 1,
-        borderRadius: 8,
-    },
+
     btnReset: {
         width: 70,
         height: 40,
