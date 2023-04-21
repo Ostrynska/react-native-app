@@ -35,6 +35,7 @@ const CreatePostsScreen = ({ navigation }) =>
         const { uri } = await camera.takePictureAsync();
         // const location = await Location.getCurrentPositionAsync();
         setPhoto(uri);
+        setIsOpenCamera(false)
     };
 
 //   const sendPhoto = () => {
@@ -128,44 +129,28 @@ const CreatePostsScreen = ({ navigation }) =>
                 <View style={styles.container}>
                     <View style={styles.innerBox} height={60}>
                         <ImageBackground
-                        style={!photo && {...styles.postImg}}
+                        style={!photo ? {...styles.postImg} : {...styles.takePhotoContainer}}
                         source={{ uri: photo }}
                         >
-                        <TouchableOpacity style={styles.postImgAdd} onPress={openCamera}>
-                            <FontAwesome name="camera" size={24} color="#BDBDBD" />
+                            <TouchableOpacity style={styles.postImgAdd} onPress={openCamera}>
+                                <FontAwesome name="camera" size={24} color="#BDBDBD" />
                             </TouchableOpacity>
-                        <Camera style={styles.camera} ref={setCamera} type={type}>
-                    {/* {!photo && <><TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
-                        <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
-                        <FontAwesome name="camera" size={24} color="#FFFFFF" />
-                                    </TouchableOpacity></>} */}
-                        </Camera>
                         </ImageBackground>
-                        {/* {isOpenCamera === false ? (
-                        <View style={styles.postImg} height={240}>
-                        <TouchableOpacity style={styles.postImgAdd} onPress={() => setIsOpenCamera((prev) => !prev)}> 
-                            <FontAwesome name="camera" size={24} color="#BDBDBD" />
-                        </TouchableOpacity>
-                        </View> 
-                        ) : (
-                        <Camera style={styles.camera} ref={setCamera} type={type}>
-                        {photo && <View style={styles.takePhotoContainer}>
+
+                        {isOpenCamera === true && <Camera style={styles.camera} ref={setCamera} type={type}>
+                                <TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
+                                    <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
+                                </TouchableOpacity>
+                                    <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
+                                        <FontAwesome name="camera" size={24} color="#FFFFFF" />
+                                    </TouchableOpacity>
+                            </Camera>}
+                        {/* {photo && <View style={styles.takePhotoContainer}>
                             <Image
                                 source={{ uri: photo }}
                                 style={{ height: 140, width: 140, borderRadius: 8 }}
                             />
-                        </View>}
-                    {!photo && <><TouchableOpacity onPress={toggleCameraType} style={styles.cameraType} >
-                        <Ionicons name="ios-camera-reverse-outline" size={20} color="#FFFFFF" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
-                        <FontAwesome name="camera" size={24} color="#FFFFFF" />
-                    </TouchableOpacity></>}
-                </Camera>
-                        )} */}
-                    {/* <TouchableOpacity > */}
+                        </View>} */}
                 {photo ? <Text style={styles.postImgInf}>Edit photo</Text> : <Text style={styles.postImgInf}>Upload photo</Text>}
                     {/* </TouchableOpacity> */}
 
@@ -249,6 +234,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     camera: {
+        // bottom: 238,
         width: "100%",
         height: 240,
         borderRadius: 8,
@@ -256,11 +242,10 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
     },
     takePhotoContainer: {
-        position: "absolute",
-        top: 50,
-        left: 50,
-        borderColor: "#fff",
-        borderWidth: 1,
+        width: "100%",
+        height: 240,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 8,
     },
     snapContainer: {
