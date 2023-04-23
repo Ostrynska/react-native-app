@@ -15,25 +15,23 @@ import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, D
 import { useDispatch } from 'react-redux'
 
 import * as ImagePicker from 'expo-image-picker';
-// import Constants from 'expo-constants';
 
 import { AntDesign } from '@expo/vector-icons';
 
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+// import {
+//   getDownloadURL,
+//   getStorage,
+//   ref,
+//   uploadBytesResumable,
+// } from "firebase/storage";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
-  avatar: "",
-  login: "",
+  nickname: "",
   email: "",
   password: "",
+  userPhoto: "",
 };
-
 export default function RegistrationScreen({ navigation })
 {
   const { height, width } = Dimensions.get('window');
@@ -42,7 +40,7 @@ export default function RegistrationScreen({ navigation })
   const [state, setState] = useState(initialState);
   const [profileImage, setProfileImage] = useState(null);
   const [isFocused, setIsFocused] = useState({
-    login: false,
+    nickname: false,
     email: false,
     password: false,
   });
@@ -79,7 +77,7 @@ export default function RegistrationScreen({ navigation })
       aspect: [4, 3],
       quality: 1
     });
-    setState((prevState) => ({ ...prevState, avatar: result }))
+    setState((prevState) => ({ ...prevState, userPhoto: result.assets[0].uri }))
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri)
     }
@@ -92,9 +90,11 @@ export default function RegistrationScreen({ navigation })
 
   const handleSubmit = () =>
   {
-    Keyboard.dismiss();
+    // Keyboard.dismiss();
+
+    dispatch(authSignUpUser(state));
     setState(initialState);
-    dispatch(authSignUpUser(state))
+    console.log(state);
   };
 
   return (
@@ -134,16 +134,16 @@ export default function RegistrationScreen({ navigation })
             <Text style={styles.titleText}>Create Account</Text>
                 <View style={styles.form}>
                   <TextInput
-                    style={isFocused.login ? [styles.input, styles.inputFocused] : styles.input}
+                    style={isFocused.nickname ? [styles.input, styles.inputFocused] : styles.input}
                     placeholder="Login"
                     placeholderTextColor="#BDBDBD"
                     textContentType={"username"}
-                    value={state.login}
+                    value={state.nickname}
                     onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, login: value }))
+                      setState((prevState) => ({ ...prevState, nickname: value }))
                     }
-                    onFocus={() => onFocus('login')}
-                    onBlur={() => onBlur('login')}
+                    onFocus={() => onFocus('nickname')}
+                    onBlur={() => onBlur('nickname')}
                   />
                   <TextInput
                     style={isFocused.email ? [styles.input, styles.inputFocused] : styles.input}
