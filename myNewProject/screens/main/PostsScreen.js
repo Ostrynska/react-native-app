@@ -1,20 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from 'react-redux'
+import React, { useState, useEffect} from "react";
+import { useDispatch, useSelector } from 'react-redux'
 
-import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image} from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
-const PostsScreen = ({ navigation }) =>
+const PostsScreen = ({ navigation, route }) =>
 {
+    const [posts, setPosts] = useState([]);
     const dispatch = useDispatch(); 
-    
+
+    const getUser = (state) => state.auth;
+    const authSelectors = {
+  getUser,
+    };
+    const user = useSelector(authSelectors.getUser);
+    console.log('user', user);
+
     const signOut = () =>
     {
     dispatch(authSignOutUser());
-  };
+    };
+
+    useEffect(() => {
+        if (route.params) {
+            setPosts((prevState) => [...prevState, route.params]);
+        }
+    }, [route.params]);
+
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -27,12 +42,44 @@ const PostsScreen = ({ navigation }) =>
 
     return(
         <View style={styles.container}>
-            <View style={styles.innerBox} height={60}>
-                <View style={styles.avatarBox}></View>
+            <View style={styles.innerBox}>
+                {user.userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: user.userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
-                    <Text style={styles.user}>Natali Romanova</Text>
-                    <Text style={styles.email}>email@example.com</Text>
+                    <Text style={styles.user}>{user.nickname}</Text>
+                    <Text style={styles.email}>{user.email}</Text>
                 </View>
+            </View>
+            <View style={{marginHorizontal: 16}}>
+            <FlatList
+                data={posts}
+                keyExtractor={(item, indx) => indx.toString()}
+                renderItem={({ item }) => (
+                <View
+                    style={{
+                    marginBottom: 34,
+                    justifyContent: "center",
+                    // alignItems: "center",
+                    }}
+                >
+                    <Image
+                    source={{ uri: item.photo }}
+                    style={{ width: '100%', height: 240, borderRadius: 8 }}
+                        />
+                        <Text style={styles.titlePost}>Forest</Text>
+                        <View style={{ marginTop: 11, flexDirection: 'row'}}>
+                            <View style={{ flexDirection: "row-reverse", alignItems: 'center' }}>
+                                <Text style={styles.commentsCount}>0</Text>
+                                <Feather name="message-circle" size={16} color="#BDBDBD"  />
+
+                            </View>
+                            <View style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}}>
+                                <Feather name="map-pin" size={16} color="#BDBDBD" style={{right: 8}} />
+                                <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+                            </View>
+                        </View>
+                </View>
+                )}
+                />
             </View>
         </View>
     )
@@ -70,6 +117,31 @@ const styles = StyleSheet.create({
         fontSize: 11,
         lineHeight: 13,
         color: "#212121CC",
+    },
+    titlePost: {
+        marginTop: 8,
+        fontFamily: "Roboto-Medium",
+        fontSize: 16,
+        lineHeight: 19,
+        color: '#212121',
+    },
+    commentsCount: {
+        fontFamily: 'Roboto-Regular',
+        fontWeight: 400,
+        fontSize: 16,
+        lineHeight: 19,
+        color: '#BDBDBD',
+        right: 6,
+    },
+    location: {
+        alignItems: 'flex-end',
+        fontFamily: 'Roboto-Regular',
+        fontWeight: 400,
+        fontSize: 16,
+        lineHeight: 19,
+        textAlign: 'right',
+        textDecorationLine: 'underline',
+        color: '#212121',
     },
 })
 
