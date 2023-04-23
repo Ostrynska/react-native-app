@@ -146,7 +146,7 @@ const CreatePostsScreen = ({ navigation }) =>
                     <View style={styles.innerBox} height={60}>
                         {isOpenCamera === false ?
                             <ImageBackground
-                        style={photo === null ? [styles.postImg] : {...styles.takePhotoContainer, borderRadius: 8}}
+                        style={!photo ? [styles.postImg] : {...styles.takePhotoContainer, borderRadius: 8}}
                         source={{ uri: photo }}
                         >
                             <TouchableOpacity style={photo ? {...styles.postImgAdd, backgroundColor: '#FFFFFF4D'} : [styles.postImgAdd]} onPress={openCamera}>
