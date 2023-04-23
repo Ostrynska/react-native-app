@@ -25,7 +25,7 @@ const CreatePostsScreen = ({ navigation }) =>
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photo, setPhoto] = useState(null);
-    // const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState(null);
     const [state, setState] = useState(initialState);
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
@@ -33,16 +33,17 @@ const CreatePostsScreen = ({ navigation }) =>
         location: false,
     });
 
+
     const takePhoto = async () => {
         const { uri } = await camera.takePictureAsync();
-        // const location = await Location.getCurrentPositionAsync();
+        const location = await Location.getCurrentPositionAsync();
+        setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
-        setIsOpenCamera(false)
     };
 
-//   const sendPhoto = () => {
-//     navigation.navigate("Posts", { photo });
-//   };
+    const sendPhoto = () => {
+        navigation.navigate("Posts", { photo });
+    };
 
     const getTabBarVisibility = (route) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -118,7 +119,7 @@ const CreatePostsScreen = ({ navigation }) =>
         if (!result.canceled) {
         setPhoto(result.assets[0].uri)
         }
-        setIsOpenCamera(false)
+        setIsOpenCamera(false);
     }
 
     if (!permission) {
@@ -128,7 +129,7 @@ const CreatePostsScreen = ({ navigation }) =>
         return (
         <>
             <Text style={{ textAlign: 'center', marginVertical: '50%' }}>We need your permission to show the camera</Text>
-            <Button onPress={requestPermission} title="grant permission" />
+            <Button onPress={requestPermission} title="Grant permission" />
       </>
     );
   }
