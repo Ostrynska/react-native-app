@@ -7,38 +7,42 @@ import {
 import { Alert } from "react-native";
 
 import { auth } from "../../firebase/config";
+import { db } from "../../firebase/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { updateUserProfile, authSignOut, authStateChange } from "./authReducer";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebase/config";
 
-export const authSignUpUser = ({avatar, login, email, password}) => async (dispatch, getState) =>
-{
+console.log('auth', auth.currentUser);
+
+export const authSignUpUser =
+  ({ email, password, nickname, userPhoto }) =>
+  async (dispatch, getState) => {
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
 
-        await updateProfile(auth.currentUser, {
-            displayName: login,
-            photoURL: avatar,
-        });
-        const { uid, displayName} = auth.currentUser;
+      await updateProfile(auth.currentUser, {
+        displayName: nickname,
+        photoURL: userPhoto,
+      });
+      const { uid, displayName, photoURL } = auth.currentUser;
 
-        dispatch(
-            updateUserProfile({
-            userId: uid,
-            login: displayName,
-            avatar: photoURL,
-            })
+      dispatch(
+        updateUserProfile({
+          userId: uid,
+          nickname: displayName,
+          userPhoto: photoURL,
+        })
       );
     } catch (error) {
       Alert.alert(error.message);
     }
-};
+  };
 
 export const authSignInUser = ({ email, password }) => async (dispatch, getState) =>
 {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
+      console.log("user", user);
     } catch (error) {
       Alert.alert(error.message);
     }};
@@ -54,8 +58,8 @@ export const authStateChangeUser = () => async (dispatch, setState) => {
       if (user) {
         const userUpdateProfile = {
           userId: user.uid,
-          login: user.displayName,
-          avatar: user.photoURL,
+          nickname: user.displayName,
+          userPhoto: user.photoURL,
         };
 
         dispatch(authStateChange({ stateChange: true }));
