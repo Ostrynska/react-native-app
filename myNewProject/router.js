@@ -60,11 +60,12 @@ export const useRoute = (isAuth) =>
           <MainTab.Screen
             name='Create post'
             component={CreatePostsScreen}
-            options={({ navigation, route }) => ({
+        options={({ navigation, route }) => ({
             tabBarIcon: ({ focused, size, color }) => (
-                <View  style={{ width: 70, height: 40, borderRadius: 20, backgroundColor: "#FF6C00", alignContent: 'center', alignItems: 'center', marginTop: 9 }}>
-                  <AntDesign name="plus" size={16} color="#FFFFFF" style={{marginVertical: 12}} />
-                </View>
+              <View style={{ width: 70, height: 40, borderRadius: 20, backgroundColor: "#FF6C00", alignContent: 'center', alignItems: 'center', marginTop: 9 }}>
+              {/* <Feather name="user" size={16} color="FFFFFF" /> */}
+              <AntDesign name="plus" size={16} color="#FFFFFF" style={{ marginVertical: 12 }} />
+              </View>
               ),
             tabBarStyle: {display: 'none'},
             headerLeft: () => (
