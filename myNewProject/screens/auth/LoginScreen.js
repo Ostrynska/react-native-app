@@ -37,7 +37,6 @@ export default function LoginScreen({ navigation })
   }
 
   const handleSubmit = () => {
-    Keyboard.dismiss();
     dispatch(authSignInUser(state));
     setState(initialState);
   };
