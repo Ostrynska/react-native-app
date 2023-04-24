@@ -6,19 +6,14 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image} from "react-
 import { Feather } from '@expo/vector-icons';
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
+import authSelectors from "../../redux/auth/authSelectors";
 
 const PostsScreen = ({ navigation, route }) =>
 {
     const [posts, setPosts] = useState([]);
-    const dispatch = useDispatch(); 
-
-    const getUser = (state) => state.auth;
-    const authSelectors = {
-        getUser,
-    };
-
     const user = useSelector(authSelectors.getUser);
-    console.log('user', user);
+
+    const dispatch = useDispatch(); 
 
     const signOut = () =>
     {
@@ -98,7 +93,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     avatarBox: {
-        backgroundColor: "black",
+        backgroundColor: "#BDBDBD",
         borderRadius: 16,
         width: 60,
         height: 60,
