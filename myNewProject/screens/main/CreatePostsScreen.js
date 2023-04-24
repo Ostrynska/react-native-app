@@ -64,7 +64,7 @@ const CreatePostsScreen = ({ navigation }) =>
             [inputName]: false
         })
     }
-    
+
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => (
@@ -89,20 +89,19 @@ const CreatePostsScreen = ({ navigation }) =>
     //     })();
     // }, []);
 
-  const handleSubmit = () => {
-    setState(initialState);
-    navigation.navigate("Posts", { photo });
-  };
-    
+    const handleSubmit = () => {
+        setState(initialState);
+        navigation.navigate("Posts", { photo });
+    };
+
     const openCamera = () => {
         setIsOpenCamera((prev) => !prev);
-        console.log('isOpenCamera', isOpenCamera);
-  };
-    
-  const handleReset = () => {
-    setState(initialState);
-    setPhoto(null);
-  };
+};
+
+    const handleReset = () => {
+        setState(initialState);
+        setPhoto(null);
+    };
 
     const toggleCameraType = () => {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
