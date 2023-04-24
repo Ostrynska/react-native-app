@@ -1,14 +1,3 @@
-// export default function RegistrationScreen()
-// {
-//     // const [login, setLogin] = useState("");
-//     // const [email, setEmail] = useState("");
-//     // const [password, setPassword] = useState("");
-
-//     // const loginHandler = (text) => setLogin(text);
-//     // const emailHandler = (email) => setEmail(email);
-//     // const passwordHandler = (text) => setPassword(text);
-// }
-
 import React, { useState, useEffect } from "react";
 
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
