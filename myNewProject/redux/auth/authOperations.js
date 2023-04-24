@@ -8,15 +8,14 @@ import { Alert } from "react-native";
 
 import { auth } from "../../firebase/config";
 import { db } from "../../firebase/config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+// import { collection, getDocs, query, where } from "firebase/firestore";
 
-import { updateUserProfile, authSignOut, authStateChange } from "./authReducer";
+import { updateUserProfile, authSignOut, authStateChange, updateUserAvatar } from "./authReducer";
 
-console.log('auth', auth.currentUser);
 
 export const authSignUpUser =
   ({ email, password, nickname, userPhoto }) =>
-  async (dispatch, getState) => {
+  async (dispatch) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
 
@@ -24,21 +23,24 @@ export const authSignUpUser =
         displayName: nickname,
         photoURL: userPhoto,
       });
-      const { uid, displayName, photoURL } = auth.currentUser;
+      const user = auth.currentUser;
+      console.log('user', user);
 
       dispatch(
         updateUserProfile({
-          userId: uid,
-          nickname: displayName,
-          userPhoto: photoURL,
+          userId: user.uid,
+          nickname: user.displayName,
+          userPhoto: user.photoURL,
+          email: user.email,
         })
       );
     } catch (error) {
       Alert.alert(error.message);
+      console.log(error);
     }
   };
 
-export const authSignInUser = ({ email, password }) => async (dispatch, getState) =>
+export const authSignInUser = ({ email, password }) => async () =>
 {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
@@ -47,12 +49,12 @@ export const authSignInUser = ({ email, password }) => async (dispatch, getState
       Alert.alert(error.message);
     }};
 
-export const authSignOutUser = () => async (dispatch, setState) => {
+export const authSignOutUser = () => async (dispatch) => {
   signOut(auth);
   dispatch(authSignOut());
 };
 
-export const authStateChangeUser = () => async (dispatch, setState) => {
+export const authStateChangeUser = () => async (dispatch) => {
   auth.onAuthStateChanged(async (user) => {
     try {
       if (user) {
@@ -60,6 +62,7 @@ export const authStateChangeUser = () => async (dispatch, setState) => {
           userId: user.uid,
           nickname: user.displayName,
           userPhoto: user.photoURL,
+          email: user.email,
         };
 
         dispatch(authStateChange({ stateChange: true }));
@@ -70,3 +73,20 @@ export const authStateChangeUser = () => async (dispatch, setState) => {
     }
   });
 };
+
+export const authUpdateAvatar = (photoURL) => async (dispatch) => {
+  try {
+    await updateProfile(auth.currentUser, {
+      photoURL,
+    });
+    // console.log('photoURL: ', photoURL);
+    const user = auth.currentUser;
+    dispatch(
+      updateUserAvatar({
+        userPhoto: user.photoURL,
+      })
+    );
+  } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
