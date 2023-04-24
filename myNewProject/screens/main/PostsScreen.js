@@ -14,8 +14,9 @@ const PostsScreen = ({ navigation, route }) =>
 
     const getUser = (state) => state.auth;
     const authSelectors = {
-  getUser,
+        getUser,
     };
+
     const user = useSelector(authSelectors.getUser);
     console.log('user', user);
 
