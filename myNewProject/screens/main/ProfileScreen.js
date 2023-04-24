@@ -1,24 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
 import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image } from "react-native";
 
+import * as ImagePicker from 'expo-image-picker';
+
 import { AntDesign, Feather } from '@expo/vector-icons';
 
-import { authSignOutUser } from "../../redux/auth/authOperations";
+import authSelectors from "../../redux/auth/authSelectors";
+import { authSignOutUser, authUpdateAvatar } from "../../redux/auth/authOperations";
+
 
 const  ProfileScreen = ({ navigation }) =>
 {
-    const { height, width } = Dimensions.get('window');
-    const dispatch = useDispatch();
+  const { height, width } = Dimensions.get('window');
 
-    const getUser = (state) => state.auth;
-    const authSelectors = {
-  getUser,
-    };
-    const user = useSelector(authSelectors.getUser);
+  const [profileImage, setProfileImage] = useState(userPhoto);
 
-    const PickProfileImage = async () =>
+  const user = useSelector(authSelectors.getUser);
+  const { userPhoto } = useSelector(authSelectors.getUser);
+
+  const dispatch = useDispatch();
+
+  const PickProfileImage = async () =>
   {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -26,21 +30,23 @@ const  ProfileScreen = ({ navigation }) =>
       aspect: [4, 3],
       quality: 1
     });
-    setState((prevState) => ({ ...prevState, userPhoto: result.assets[0].uri }))
+    setProfileImage(result.assets[0].uri)
+    dispatch(authUpdateAvatar(result.assets[0].uri));
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri)
+      setProfileImage(result.assets[0].uri);
     }
   }
 
   const RemoveProfileImage = () =>
   {
-    setProfileImage(false)
+    dispatch(authUpdateAvatar(''));
+    setProfileImage('');
   }
-    
-        const signOut = () =>
+
+  const signOut = () =>
     {
     dispatch(authSignOutUser());
-    };
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -75,11 +81,12 @@ const  ProfileScreen = ({ navigation }) =>
                   <AntDesign name="plus" size={16} color="#FF6C00"/>
                 </View>
               </TouchableOpacity>
-                      }
-                <View style={{marginHorizontal: 16, position: 'relative'}}>
-                <TouchableOpacity onPress={signOut} style={{ marginLeft: 'auto' }}>
-                              <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', marginLeft: 'auto'}} />
+            }
+            <TouchableOpacity onPress={signOut}
+                  >
+                  <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
                 </TouchableOpacity>
+                <View style={{marginHorizontal: 16, position: 'relative'}}>
             <Text style={styles.titleText}>{user.nickname}</Text>
             </View>
         </View>
@@ -109,6 +116,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 92,
+    marginBottom: 33,
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35.16,
