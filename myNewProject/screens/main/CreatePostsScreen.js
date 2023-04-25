@@ -11,10 +11,9 @@ import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { db } from "../../firebase/config";
+import { storage } from "../../firebase/config";
 import uuid from "react-native-uuid";
-import { doc, setDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const initialState = {
     title: "",
@@ -55,22 +54,17 @@ const CreatePostsScreen = ({ navigation }) =>
     const uploadPhotoToServer = async () =>
     {
         if (photo === null) return;
-        
-//     const response = await fetch(photo);
-//         const file = await response.blob();
-//     const uniquePostId = Date.now().toString();
-// const data = await db.storage().ref(`postImage/${uniquePostId}`).put(file);
-// console.log('data', data);   
-    // const storage = getStorage();
-    // const id = uuid.v4();
-    //     const storageRef = ref(storage, `images/${id}`);
-    //     console.log(storageRef);
-    // const response = await fetch(photo);
-    // const file = await response.blob();
-    // await uploadBytes(storageRef, file);
-    // // const link = await getDownloadURL(ref(storage, `images/${id}`));
-    // // return link;
-  };
+        const id = uuid.v4();
+        const response = await fetch(photo);
+        const file = await response.blob();
+        const photoRef = ref(storage, `images/${id}`);
+        await uploadBytes(photoRef, file).then(() =>
+        {
+            console.log('Photo uploaded');
+        })
+        const link = await getDownloadURL(ref(storage, `images/${id}`));
+        return link;
+    };
 
 
     const getTabBarVisibility = (route) => {
