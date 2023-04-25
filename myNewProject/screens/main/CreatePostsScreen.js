@@ -17,7 +17,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const initialState = {
     title: "",
-    location: "",
+    place: "",
 };
 
 const CreatePostsScreen = ({ navigation }) =>
@@ -29,14 +29,13 @@ const CreatePostsScreen = ({ navigation }) =>
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photo, setPhoto] = useState(null);
-    const [location, setLocation] = useState(null);
+    const [locationPlace, setLocationPlace] = useState(null);
     const [state, setState] = useState(initialState);
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
         title: false,
-        location: false,
+        place: false,
     });
-
 
     const takePhoto = async () => {
         const { uri } = await camera.takePictureAsync();
@@ -44,12 +43,6 @@ const CreatePostsScreen = ({ navigation }) =>
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
     };
-
-    // const sendPhoto = () =>
-    // {
-    //     uploadPhotoToServer();
-    //     navigation.navigate("Posts", { photo });
-    // };
 
     const uploadPhotoToServer = async () =>
     {
@@ -97,25 +90,33 @@ const CreatePostsScreen = ({ navigation }) =>
         });
     }, [navigation]);
 
-    // useEffect(() => {
-    //     (async () => {
-        
-    //     let { status } = await Location.requestForegroundPermissionsAsync();
-    //     if (status !== 'granted') {
-    //         setErrorMsg('Permission to access location was denied');
-    //         return;
-    //     }
-
-    //     let location = await Location.getCurrentPositionAsync({});
-    //     setLocation(location);
-    //     })();
-    // }, []);
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            const coords = {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            };
+            setLocationPlace(coords);
+        })();
+    }, []);
 
     const handleSubmit = () => {
         uploadPhotoToServer();
         setState(initialState);
-        navigation.navigate("Posts", { photo });
+        console.log('title', state.title);
+        console.log('location', state.place);
+        navigation.navigate("Home", { photo });
     };
+
+    const onChangeText = (state, name) => {
+        setState(value => ({ ...value, [name]: state }));
+    } ;
 
     const openCamera = () => {
         setIsOpenCamera((prev) => !prev);
@@ -123,7 +124,7 @@ const CreatePostsScreen = ({ navigation }) =>
 
     const handleReset = () => {
         setState(initialState);
-        setPhoto(null);
+        setPhoto('');
     };
 
     const toggleCameraType = () => {
@@ -187,9 +188,10 @@ const CreatePostsScreen = ({ navigation }) =>
                                     <TouchableOpacity onPress={takePhoto} style={styles.snapContainer} >
                                         <FontAwesome name="camera" size={24} color="#FFFFFF" />
                                     </TouchableOpacity>
-                            </Camera>}
-                {photo ? <Text style={styles.postImgInf}>Edit photo</Text> : <Text style={styles.postImgInf}>Upload photo</Text>}
-
+                        </Camera>}
+                        <Text style={styles.postImgInf}>
+                            {photo ? 'Edit photo' : 'Upload photo' }
+                        </Text>
                     <View style={styles.postForm}>
                             <TextInput
                                 style={isFocused.title ? { ...styles.input, borderBottomColor: '#FF6C00'} : {...styles.input, fontFamily: "Roboto-Medium" }}
@@ -197,31 +199,28 @@ const CreatePostsScreen = ({ navigation }) =>
                                 placeholderTextColor="#BDBDBD"
                                 inputmode={'text'}
                                 value={state.title}
-                                onChangeText={(value) =>
-                                    setState((prevState) => ({ ...prevState, title: value }))
-                                }
+                                onChangeText={value => onChangeText(value, 'title')}
                                 onFocus={() => onFocus('title')}
                                 onBlur={() => onBlur('title') }
                             />
                             <View style={{position: 'relative'}}>
                                 <TextInput
-                                    style={isFocused.location ? {...styles.input, borderBottomColor: '#FF6C00', marginTop: 32, paddingLeft: 24 } : { ...styles.input, marginTop: 32, paddingLeft: 24 }}
+                                    style={isFocused.place ? {...styles.input, borderBottomColor: '#FF6C00', marginTop: 32, paddingLeft: 24 } : { ...styles.input, marginTop: 32, paddingLeft: 24 }}
                                     placeholder="Location..."
                                     placeholderTextColor="#BDBDBD"
                                     textContentType={"location"}
-                                    value={state.location}
-                                    onChangeText={(value) =>
-                                        setState((prevState) => ({ ...prevState, location: value }))
-                                    }
-                                    onFocus={() => onFocus('location')}
-                                    onBlur={() => onBlur('location')}
+                                    value={state.place}
+                                    onChangeText={value => onChangeText(value, 'place')}
+                                    onFocus={() => onFocus('place')}
+                                    onBlur={() => onBlur('place')}
                                 />
                                 <View style={styles.inputIcon}>
-                                    <Feather name="map-pin" size={16} color="#BDBDBD" />
+                                    <Feather name="map-pin" size={16} color="#BDBDBD" style={isFocused.place &&{color:'#FF6C00'}} />
                                 </View>
                             </View>
 
-                            <TouchableOpacity
+                            {/* {!photo || state.title.length !== 0 || state.place.length !== 0} */}
+                                <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => handleSubmit()}
                             >
