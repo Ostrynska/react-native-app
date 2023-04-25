@@ -7,14 +7,14 @@ const MapScreen = () => (
     <MapView
       style={{ flex: 1 }}
       initialRegion={{
-        latitude: 50.516339,
-        longitude: 30.602185,
+        latitude: 50.450001,
+        longitude: 30.523333,
         latitudeDelta: 0.001,
         longitudeDelta: 0.006,
       }}
     >
       <Marker
-        coordinate={{ latitude: 50.516339, longitude: 30.602185 }}
+        coordinate={{ latitude: 50.450001, longitude: 30.523333 }}
         title="Travel photo"
       />
     </MapView>
