@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, To
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
+import { useSelector } from "react-redux";
+
 import { Camera, CameraType } from "expo-camera";
 import * as Location from 'expo-location';
 
@@ -11,7 +13,7 @@ import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/
 
 import * as ImagePicker from 'expo-image-picker';
 
-import { storage } from "../../firebase/config";
+import { storage, db } from "../../firebase/config";
 import uuid from "react-native-uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
@@ -29,7 +31,7 @@ const CreatePostsScreen = ({ navigation }) =>
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photo, setPhoto] = useState(null);
-    const [locationPlace, setLocationPlace] = useState(null);
+    const [location, setLocation] = useState(null);
     const [state, setState] = useState(initialState);
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
@@ -37,9 +39,12 @@ const CreatePostsScreen = ({ navigation }) =>
         place: false,
     });
 
+    const { userId, nickname } = useSelector((state) => state.auth);
+
     const takePhoto = async () => {
         const { uri } = await camera.takePictureAsync();
-        const location = await Location.getCurrentPositionAsync();
+        const locationRes = await Location.getCurrentPositionAsync();
+        setState((prevState) => ({ ...prevState, place: locationRes }))
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
     };
@@ -59,6 +64,11 @@ const CreatePostsScreen = ({ navigation }) =>
         return link;
     };
 
+    const uploadPostToServer = async () =>
+    {
+        const photo = uploadPhotoToServer();
+        const createPosts = await db.firestore().collection('posts').add(photo, state.title, state.place, userId, nickname);
+    }
 
     const getTabBarVisibility = (route) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -102,12 +112,12 @@ const CreatePostsScreen = ({ navigation }) =>
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             };
-            setLocationPlace(coords);
+            setLocation(coords);
         })();
     }, []);
 
     const handleSubmit = () => {
-        uploadPhotoToServer();
+        uploadPostToServer();
         setState(initialState);
         console.log('title', state.title);
         console.log('location', state.place);
@@ -143,6 +153,8 @@ const CreatePostsScreen = ({ navigation }) =>
         setPhoto(result.assets[0].uri)
         }
         setIsOpenCamera(false);
+        const locationRes = await Location.getCurrentPositionAsync();
+        setState((prevState) => ({ ...prevState, place: locationRes }))
     }
 
     if (!permission) {
