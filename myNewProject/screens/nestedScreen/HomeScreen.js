@@ -63,15 +63,14 @@ const HomeScreen = ({ navigation, route }) =>
                         />
                         <Text style={styles.titlePost}></Text>
                         <View style={{ marginTop: 11, flexDirection: 'row'}}>
-                            <View style={{ flexDirection: "row-reverse", alignItems: 'center' }}>
+                            <TouchableOpacity style={{ flexDirection: "row-reverse", alignItems: 'center' }} onPress={() => navigation.navigate("Comments")}>
                                 <Text style={styles.commentsCount}>0</Text>
                                 <Feather name="message-circle" size={16} color="#BDBDBD"  />
-
-                            </View>
-                            <View style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}}>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}} onPress={() => navigation.navigate("Map")}>
                                 <Feather name="map-pin" size={16} color="#BDBDBD" style={{right: 8}} />
                                 <Text style={styles.location}></Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                 </View>
                 )}
