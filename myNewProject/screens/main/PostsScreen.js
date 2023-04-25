@@ -61,7 +61,7 @@ const PostsScreen = ({ navigation, route }) =>
                     source={{ uri: item.photo }}
                     style={{ width: '100%', height: 240, borderRadius: 8 }}
                         />
-                        <Text style={styles.titlePost}>Forest</Text>
+                        <Text style={styles.titlePost}></Text>
                         <View style={{ marginTop: 11, flexDirection: 'row'}}>
                             <View style={{ flexDirection: "row-reverse", alignItems: 'center' }}>
                                 <Text style={styles.commentsCount}>0</Text>
@@ -70,7 +70,7 @@ const PostsScreen = ({ navigation, route }) =>
                             </View>
                             <View style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}}>
                                 <Feather name="map-pin" size={16} color="#BDBDBD" style={{right: 8}} />
-                                <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+                                <Text style={styles.location}></Text>
                             </View>
                         </View>
                 </View>
