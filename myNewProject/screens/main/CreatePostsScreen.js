@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, To
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Camera, CameraType } from "expo-camera";
 import * as Location from 'expo-location';
@@ -14,42 +14,92 @@ import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/
 import * as ImagePicker from 'expo-image-picker';
 
 import { storage, db } from "../../firebase/config";
+import { doc, setDoc } from "firebase/firestore";
 import uuid from "react-native-uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
-const initialState = {
-    title: "",
-    place: "",
-};
+import { addPost, getAllPosts } from "../../redux/posts/postsOperations";
 
 const CreatePostsScreen = ({ navigation }) =>
 {
     const { height, width } = Dimensions.get('window');
 
     const [camera, setCamera] = useState(null);
-    const [isOpenCamera, setIsOpenCamera] = useState(false);
     const [type, setType] = useState(CameraType.back);
+    const [isOpenCamera, setIsOpenCamera] = useState(false);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [photo, setPhoto] = useState(null);
+
+    const [title, setTitle] = useState("");
+
     const [location, setLocation] = useState(null);
-    const [state, setState] = useState(initialState);
+    const [inputLocation, setInputLocation] = useState("");
+
     const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
         title: false,
         place: false,
     });
 
-    const { userId, nickname } = useSelector((state) => state.auth);
+    const { userId, nickname, userPhoto } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
-    const takePhoto = async () => {
-        const { uri } = await camera.takePictureAsync();
-        const locationRes = await Location.getCurrentPositionAsync();
-        setState((prevState) => ({ ...prevState, place: locationRes }))
+    const takePhotoFromLibrary = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        });
+            if (!result.canceled) {
+                setPhoto(result.assets[0].uri)
+        }
+        setIsOpenCamera(false);
+              const location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      const latitude = location?.coords.latitude;
+      const longitude = location?.coords.longitude;
+
+      const geoCode = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      let fullLocation = `${geoCode[0].city},${geoCode[0].country}`;
+      setInputLocation(fullLocation);
+        }
+
+    const takePhoto = async () =>
+    {
+        let options = {
+            quality: 1,
+            base64: true,
+            exif: false,
+    };
+        const { uri } = await camera.takePictureAsync(options);
+        // const locationRes = await Location.getCurrentPositionAsync();
+        // console.log('locationRes', locationRes);
+        // setState((prevState) => ({ ...prevState, place: locationRes }))
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
+        console.log('photo', photo);
+              const location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      const latitude = location?.coords.latitude;
+      const longitude = location?.coords.longitude;
+
+      const geoCode = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      let fullLocation = `${geoCode[0].city},${geoCode[0].country}`;
+      setInputLocation(fullLocation);
     };
 
-    const uploadPhotoToServer = async () =>
+    const uploadPhotoToServer = async (photo) =>
     {
         if (photo === null) return;
         const id = uuid.v4();
@@ -63,12 +113,6 @@ const CreatePostsScreen = ({ navigation }) =>
         const link = await getDownloadURL(ref(storage, `images/${id}`));
         return link;
     };
-
-    const uploadPostToServer = async () =>
-    {
-        const photo = uploadPhotoToServer();
-        const createPosts = await db.firestore().collection('posts').add(photo, state.title, state.place, userId, nickname);
-    }
 
     const getTabBarVisibility = (route) => {
         const routeName = getFocusedRouteNameFromRoute(route);
@@ -107,54 +151,66 @@ const CreatePostsScreen = ({ navigation }) =>
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
-            let location = await Location.getCurrentPositionAsync({});
-            const coords = {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-            };
-            setLocation(coords);
         })();
     }, []);
 
-    const handleSubmit = () => {
-        uploadPostToServer();
-        setState(initialState);
-        console.log('title', state.title);
-        console.log('location', state.place);
-        navigation.navigate("Home", { photo });
-    };
+    const handleSubmit = async () => {
 
-    const onChangeText = (state, name) => {
-        setState(value => ({ ...value, [name]: state }));
-    } ;
+
+    if (
+      photo.length !== 0 &&
+      title.length !== 0 &&
+      inputLocation.length !== 0
+    ) {
+      const address = await Location.geocodeAsync(inputLocation);
+      const latitude = address[0]?.latitude;
+      const longitude = address[0]?.longitude;
+
+      const id = uuid.v4();
+      const photoLink = await uploadPhotoToServer(photo);
+
+      const date = new Date().getTime();
+      const coords =
+        latitude && longitude ? { latitude, longitude } : "noCoords";
+      const newPost = {
+        createdAt: date,
+        photo: photoLink,
+        title,
+        likes: [],
+        comments: 0,
+        photoLocation: coords,
+        inputLocation,
+        id,
+        userId,
+        userPhoto,
+        nickname,
+      };
+        console.log(newPost);
+      await setDoc(doc(db, "posts", `${id}`), newPost);
+
+      dispatch(addPost(newPost));
+      dispatch(getAllPosts());
+    //   clearPost();
+    //   setIsLoading(false);
+      navigation.navigate("Home");
+    }
+
+    return;
+  };
 
     const openCamera = () => {
         setIsOpenCamera((prev) => !prev);
 };
 
     const handleReset = () => {
-        setState(initialState);
         setPhoto('');
+        setLocation("");
+        setTitle("");
+        setInputLocation("");
     };
 
     const toggleCameraType = () => {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
-    }
-
-    const takePhotoFromLibrary = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1
-        });
-        setPhoto((prevState) => ({ ...prevState, photo: result }))
-        if (!result.canceled) {
-        setPhoto(result.assets[0].uri)
-        }
-        setIsOpenCamera(false);
-        const locationRes = await Location.getCurrentPositionAsync();
-        setState((prevState) => ({ ...prevState, place: locationRes }))
     }
 
     if (!permission) {
@@ -210,8 +266,8 @@ const CreatePostsScreen = ({ navigation }) =>
                                 placeholder="Title..."
                                 placeholderTextColor="#BDBDBD"
                                 inputmode={'text'}
-                                value={state.title}
-                                onChangeText={value => onChangeText(value, 'title')}
+                                value={title}
+                                onChangeText={(text) => setTitle(text)}
                                 onFocus={() => onFocus('title')}
                                 onBlur={() => onBlur('title') }
                             />
@@ -221,8 +277,8 @@ const CreatePostsScreen = ({ navigation }) =>
                                     placeholder="Location..."
                                     placeholderTextColor="#BDBDBD"
                                     textContentType={"location"}
-                                    value={state.place}
-                                    onChangeText={value => onChangeText(value, 'place')}
+                                    value={inputLocation}
+                                    onChangeText={(text) => setInputLocation(text)}
                                     onFocus={() => onFocus('place')}
                                     onBlur={() => onBlur('place')}
                                 />
@@ -231,8 +287,7 @@ const CreatePostsScreen = ({ navigation }) =>
                                 </View>
                             </View>
 
-                            {/* {!photo || state.title.length !== 0 || state.place.length !== 0} */}
-                                <TouchableOpacity
+                            <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => handleSubmit()}
                             >
