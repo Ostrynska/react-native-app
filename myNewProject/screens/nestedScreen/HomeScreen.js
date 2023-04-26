@@ -78,10 +78,12 @@ const HomeScreen = ({ navigation, route }) =>
                     // alignItems: "center",
                     }}
                 >
+
                     <Image
                     source={{ uri: item.photo }}
                     style={{ width: '100%', height: 240, borderRadius: 8 }}
                         />
+
                         <Text style={styles.titlePost}></Text>
                         <View style={{ marginTop: 11, flexDirection: 'row'}}>
                             <TouchableOpacity style={{ flexDirection: "row-reverse", alignItems: 'center' }} onPress={() => navigation.navigate("Comments")}>
