@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image} from "react-native";
@@ -6,18 +6,22 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image} from "react-
 import { Feather } from '@expo/vector-icons';
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
-import authSelectors from "../../redux/auth/authSelectors";
+import { PublicPosts } from "../../components/PublicPosts";
+import { getAllPosts } from "../../redux/posts/postsOperations";
+
 
 const HomeScreen = ({ navigation, route }) =>
 {
-    const [posts, setPosts] = useState([]);
-    const user = useSelector(authSelectors.getUser);
-
-    const dispatch = useDispatch(); 
+    const { allItems: allPosts } = useSelector((state) => state.posts);
+    const user = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getAllPosts());
+    }, []);
 
     const signOut = () =>
     {
-    dispatch(authSignOutUser());
+        dispatch(authSignOutUser());
     };
 
     useEffect(() => {
@@ -25,6 +29,14 @@ const HomeScreen = ({ navigation, route }) =>
             setPosts((prevState) => [...prevState, route.params]);
         }
     }, [route.params]);
+
+    const renderItem = ({ item }) => (
+        <PublicPosts item={item} navigation={navigation} />
+    );
+
+    // const updatePosts = () => {
+    //     dispatch(getAllPosts());
+    // };
 
     useEffect(() => {
         navigation.setOptions({
@@ -45,8 +57,17 @@ const HomeScreen = ({ navigation, route }) =>
                     <Text style={styles.email}>{user.email}</Text>
                 </View>
             </View>
-            <View style={{marginHorizontal: 16}}>
-            <FlatList
+            <View style={{ marginHorizontal: 16 }}>
+                <FlatList
+                    data={allPosts}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    style={{
+                        marginBottom: 100,
+                    }}
+                />
+            {/* <FlatList
                 data={posts}
                 keyExtractor={(item, indx) => indx.toString()}
                 renderItem={({ item }) => (
@@ -74,7 +95,7 @@ const HomeScreen = ({ navigation, route }) =>
                         </View>
                 </View>
                 )}
-                />
+                /> */}
             </View>
         </View>
     )
