@@ -76,7 +76,7 @@ const  ProfileScreen = ({ navigation }) =>
           source={require("../../assets/images/signUp-bg.jpg")}
         >
             <View style={styles.innerBox} height={height / 1.35}>
-            {user.userPhoto ?
+{user.userPhoto ?
               <Image
                 source={{ uri: user.userPhoto }}
                 style={{...styles.photoBox, width: 120, height: 120 }} />
@@ -97,7 +97,7 @@ const  ProfileScreen = ({ navigation }) =>
                   >
                   <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
               </TouchableOpacity>
-              <View style={{marginHorizontal: 16, position: 'relative'}}>
+              <View style={{position: 'relative'}}>
                 <Text style={styles.titleText}>{user.nickname}</Text>
                 <FlatList
                   data={posts}
@@ -110,7 +110,7 @@ const  ProfileScreen = ({ navigation }) =>
                   showsVerticalScrollIndicator={false}
                 />
               </View>
-        </View>
+            </View>
         </ImageBackground>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -122,7 +122,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-},
+  },
   image: {
     flex: 1,
     resizeMode: "cover",
