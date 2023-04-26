@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image } from "react-native";
+import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -10,17 +10,28 @@ import { AntDesign, Feather } from '@expo/vector-icons';
 import authSelectors from "../../redux/auth/authSelectors";
 import { authSignOutUser, authUpdateAvatar } from "../../redux/auth/authOperations";
 
+import { PrivatePosts } from "../../components/PrivatePosts";
+import { getOwnPosts } from "../../redux/posts/postsOperations";
+
 
 const  ProfileScreen = ({ navigation }) =>
 {
   const { height, width } = Dimensions.get('window');
-
+  const { nickname, userId } = useSelector((state) => state.auth);
+  const { items: posts, allItems: allPosts, } = useSelector((state) => state.posts);
   const [profileImage, setProfileImage] = useState(userPhoto);
 
   const user = useSelector(authSelectors.getUser);
   const { userPhoto } = useSelector(authSelectors.getUser);
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getOwnPosts(userId));
+  }, [allPosts]);
+
+  const renderItem = ({ item }) => (
+    <PrivatePosts item={item} navigation={navigation} />
+  );
 
   const PickProfileImage = async () =>
   {
@@ -85,10 +96,20 @@ const  ProfileScreen = ({ navigation }) =>
             <TouchableOpacity onPress={signOut}
                   >
                   <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
-                </TouchableOpacity>
-                <View style={{marginHorizontal: 16, position: 'relative'}}>
-            <Text style={styles.titleText}>{user.nickname}</Text>
-            </View>
+              </TouchableOpacity>
+              <View style={{marginHorizontal: 16, position: 'relative'}}>
+                <Text style={styles.titleText}>{user.nickname}</Text>
+                <FlatList
+                  data={posts}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id}
+                  style={{
+                    marginTop: 10,
+                    // marginBottom: 160,
+                  }}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
         </View>
         </ImageBackground>
       </KeyboardAvoidingView>
