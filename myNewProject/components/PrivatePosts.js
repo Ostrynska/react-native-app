@@ -29,7 +29,7 @@ export const PrivatePosts = ({ item, navigation }) => {
     if (likes?.includes(userNickname)) {
       setLikeCounter("#FF6C00");
     } else {
-      setLikeCounter("black");
+      setLikeCounter("#BDBDBD");
     }
     const unsub = onSnapshot(doc(db, "posts", id), (doc) => {
       setPost(doc.data());
@@ -48,7 +48,7 @@ export const PrivatePosts = ({ item, navigation }) => {
       await updateDoc(postRef, {
         likes: filteredLikes,
       });
-      setLikeCounter("black");
+      setLikeCounter("#BDBDBD");
       dispatch(getOwnPosts());
     } else {
       await updateDoc(postRef, {
@@ -59,21 +59,21 @@ export const PrivatePosts = ({ item, navigation }) => {
     }
   };
   return (
-    <>
+    <View style={{ marginBottom: 20, justifyContent: "center" }}>
       <Image
         source={{
           uri: photo,
         }}
         style={{ width: '100%', height: 240, borderRadius: 8 }}
         />
-      <Text style={styles.titlePost}>{title}</Text>
-      <View style={{ marginTop: 11, flexDirection: 'row'}}>
+       <Text style={styles.title}>{title}</Text>
+      <View style={styles.informationBox}>
         <TouchableOpacity
-          style={{ flexDirection: "row-reverse", alignItems: 'center' }}
+          style={styles.spanBox}
           activeOpacity={0.8}
           onPress={() => navigation.navigate("Comments", { photo, id })}
         >
-            <Feather name="message-circle" size={16} color="#BDBDBD"  />
+          <EvilIcons name="comment" size={24} color="#BDBDBD" />
           <Text style={styles.spanValue}>{comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.spanBox} activeOpacity={0.8}>
@@ -86,17 +86,17 @@ export const PrivatePosts = ({ item, navigation }) => {
           />
           <Text style={styles.spanValue}>{likes?.length}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}}>
-          <EvilIcons name="location" size={24} color="black" />
+        <View style={styles.spanBoxLocation}>
+          <EvilIcons name="location" size={24} color="#BDBDBD" />
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.navigate("Map", { photoLocation })}
           >
-            <Text>{inputLocation}</Text>
+            <Text style={styles.location}>{inputLocation}</Text>
           </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
       </View>
-    </>
+    </View>
   );
 };
 
@@ -114,11 +114,14 @@ const styles = StyleSheet.create({
   userInformation: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 5,
   },
   userName: {
     marginLeft: 10,
     fontFamily: "Roboto-Medium",
     fontSize: 13,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     marginTop: 5,
@@ -127,9 +130,11 @@ const styles = StyleSheet.create({
     height: 240,
   },
   title: {
+    marginTop: 8,
     fontFamily: "Roboto-Medium",
     fontSize: 16,
-    marginTop: 8,
+    lineHeight: 19,
+    color: '#212121',
   },
   informationBox: {
     marginTop: 12,
@@ -146,7 +151,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: "auto",
   },
+  location: {
+    alignItems: 'flex-end',
+    fontFamily: 'Roboto-Regular',
+    fontWeight: 400,
+    fontSize: 14,
+    lineHeight: 19,
+    textAlign: 'right',
+    textDecorationLine: 'underline',
+    color: '#212121',
+  },
   spanValue: {
     marginLeft: 5,
+    fontFamily: 'Roboto-Regular',
+    fontWeight: 400,
+    fontSize: 16,
+    lineHeight: 19,
+    // color: '#BDBDBD',
   },
 });
