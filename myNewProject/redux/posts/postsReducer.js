@@ -1,31 +1,65 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { addPost, getAllPosts, getOwnPosts } from "./postsOperations";
+
 const initialState = {
-  posts: [],
-  ownPosts: [],
+  items: [],
+  allItems: [],
   comments: [],
+  isLoading: false,
+  error: null,
 };
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    updatePosts: (state, { payload }) => ({
-      ...state,
-      posts: payload,
-    }),
-    updateOwnPosts: (state, { payload }) => ({
-      ...state,
-      ownPosts: payload,
-    }),
-    updateCommentsToPost: (state, { payload }) => ({
-      ...state,
-      comments: payload,
-    }),
-    reset: () => ({...initialState})
-  },
+  extraReducers: (builder) =>
+    builder
+      .addCase(getOwnPosts.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getOwnPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = action.payload;
+      })
+      .addCase(getOwnPosts.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(getAllPosts.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.allItems = action.payload;
+      })
+      .addCase(getAllPosts.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(addPost.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(addPost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // .addCase(fetchPostCommnets.pending, (state, action) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(fetchPostCommnets.fulfilled, (state, action) => {
+      //   console.log(action);
+      //   state.isLoading = false;
+      //   state.comments = action.payload;
+      // })
+      // .addCase(fetchPostCommnets.rejected, (state, action) => {
+      //   state.isLoading = false;
+      //   state.error = action.payload;
+      // }),
 });
 
-export const { updatePosts, updateOwnPosts, updateCommentsToPost } =
-  postsSlice.actions;
 export const postsReducer = postsSlice.reducer;
