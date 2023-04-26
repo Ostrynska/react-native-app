@@ -4,7 +4,7 @@ import { initializeAuth, getReactNativePersistence } from "firebase/auth/react-n
 
 import { initializeApp } from "firebase/app";
 import { getStorage } from 'firebase/storage';
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLL2wM9p5_YOMevbMWkk_BnUcntCgW_ns",
@@ -17,7 +17,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
