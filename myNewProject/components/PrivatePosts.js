@@ -11,7 +11,7 @@ export const PrivatePosts = ({ item, navigation }) => {
   const userNickname = useSelector((state) => state.auth.nickname);
   const [post, setPost] = useState(null);
   const dispatch = useDispatch();
-  const [likeCounter, setLikeCounter] = useState("black");
+  const [likeCounter, setLikeCounter] = useState("#BDBDBD");
 
   const {
     photo,
