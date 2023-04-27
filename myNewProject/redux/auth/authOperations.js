@@ -7,8 +7,6 @@ import {
 import { Alert } from "react-native";
 
 import { auth } from "../../firebase/config";
-// import { db } from "../../firebase/config";
-// import { collection, getDocs, query, where } from "firebase/firestore";
 
 import { updateUserProfile, authSignOut, authStateChange, updateUserAvatar } from "./authReducer";
 
@@ -76,11 +74,10 @@ export const authStateChangeUser = () => async (dispatch) => {
 
 export const authUpdateAvatar = (photoURL) => async (dispatch) => {
   try {
-    await updateProfile(auth.currentUser, {
+    await updateProfile(auth.stateChange, {
       photoURL,
     });
-    // console.log('photoURL: ', photoURL);
-    const user = auth.currentUser;
+    const user = auth.stateChange;
     dispatch(
       updateUserAvatar({
         userPhoto: user.photoURL,
