@@ -2,7 +2,7 @@ import { EvilIcons, AntDesign } from "@expo/vector-icons";
 
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db, storage } from "../firebase/config";
+import { db } from "../firebase/config";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPosts } from "../redux/posts/postsOperations";
 import { useEffect, useState } from "react";
