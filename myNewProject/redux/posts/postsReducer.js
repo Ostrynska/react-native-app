@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { addPost, getAllPosts, getOwnPosts } from "./postsOperations";
+import { addPost, getAllPosts, getOwnPosts, getPostCommnets } from "./postsOperations";
 
 const initialState = {
   items: [],
@@ -48,18 +48,17 @@ const postsSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      // .addCase(fetchPostCommnets.pending, (state, action) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(fetchPostCommnets.fulfilled, (state, action) => {
-      //   console.log(action);
-      //   state.isLoading = false;
-      //   state.comments = action.payload;
-      // })
-      // .addCase(fetchPostCommnets.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.error = action.payload;
-      // }),
+      .addCase(getPostCommnets.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getPostCommnets.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.comments = action.payload;
+      })
+      .addCase(getPostCommnets.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      }),
 });
 
 export const postsReducer = postsSlice.reducer;
