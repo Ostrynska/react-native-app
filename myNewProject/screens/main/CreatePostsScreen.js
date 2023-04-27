@@ -78,9 +78,7 @@ const CreatePostsScreen = ({ navigation }) =>
             exif: false,
     };
         const { uri } = await camera.takePictureAsync(options);
-        // const locationRes = await Location.getCurrentPositionAsync();
-        // console.log('locationRes', locationRes);
-        // setState((prevState) => ({ ...prevState, place: locationRes }))
+
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
         console.log('photo', photo);
