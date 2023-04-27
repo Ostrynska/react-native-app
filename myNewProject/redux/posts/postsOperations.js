@@ -64,27 +64,27 @@ export const addPost = createAsyncThunk(
 }
 );
 
-// export const fetchPostCommnets = createAsyncThunk(
-//   "posts/fetchPostComments",
-//   async (id, thunkAPI) => {
-//     try {
-//       const getPosts = async () => {
-//         const comments = [];
-//         const q = query(collection(db, "comments"), where("postId", "==", id));
+export const getPostCommnets = createAsyncThunk(
+  "posts/getPostComments",
+  async (id, thunkAPI) => {
+    try {
+      const getOwnPosts = async () => {
+        const comments = [];
+        const q = query(collection(db, "comments"), where("postId", "==", id));
 
-//         const querySnapshot = await getDocs(q);
-//         querySnapshot.forEach((doc) => {
-//           comments.push(doc.data());
-//         });
-//         return comments;
-//       };
-//       const comments = await getPosts();
-//       return comments.sort(
-//         (firstComment, lastComment) =>
-//           lastComment.createdAt - firstComment.createdAt
-//       );
-//     } catch (err) {
-//       return thunkAPI.rejectWithValue(err.message);
-//     }
-//   }
-// );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          comments.push(doc.data());
+        });
+        return comments;
+      };
+      const comments = await getOwnPosts();
+      return comments.sort(
+        (firstComment, lastComment) =>
+          lastComment.createdAt - firstComment.createdAt
+      );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
