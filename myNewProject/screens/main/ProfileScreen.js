@@ -13,7 +13,6 @@ import { authSignOutUser, authUpdateAvatar } from "../../redux/auth/authOperatio
 import { PrivatePosts } from "../../components/PrivatePosts";
 import { getOwnPosts } from "../../redux/posts/postsOperations";
 
-
 const  ProfileScreen = ({ navigation }) =>
 {
   const { height, width } = Dimensions.get('window');
@@ -97,7 +96,7 @@ const  ProfileScreen = ({ navigation }) =>
                   >
                   <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
               </TouchableOpacity>
-              <View style={{position: 'relative'}}>
+              {/* <View style={{position: 'relative'}}>
                 <Text style={styles.titleText}>{user.nickname}</Text>
                 <FlatList
                   data={posts}
@@ -109,7 +108,7 @@ const  ProfileScreen = ({ navigation }) =>
                   }}
                   showsVerticalScrollIndicator={false}
                 />
-              </View>
+              </View> */}
             </View>
         </ImageBackground>
       </KeyboardAvoidingView>
