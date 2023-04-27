@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Button, TouchableOpacity, ImageBackground } from "react-native";
-// import { TouchableOpacity } from "react-native-gesture-handler";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { useDispatch, useSelector } from "react-redux";
@@ -53,22 +52,23 @@ const CreatePostsScreen = ({ navigation }) =>
         });
             if (!result.canceled) {
                 setPhoto(result.assets[0].uri)
-        }
+            }
+        setPhoto(result.assets[0].uri)
         setIsOpenCamera(false);
-              const location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+        const location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
 
-      const latitude = location?.coords.latitude;
-      const longitude = location?.coords.longitude;
+        const latitude = location?.coords.latitude;
+        const longitude = location?.coords.longitude;
 
-      const geoCode = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
+        const geoCode = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude,
+        });
 
-      let fullLocation = `${geoCode[0].city},${geoCode[0].country}`;
-      setInputLocation(fullLocation);
-        }
+        let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
+        setInputLocation(fullLocation);
+    }
 
     const takePhoto = async () =>
     {
@@ -78,7 +78,6 @@ const CreatePostsScreen = ({ navigation }) =>
             exif: false,
     };
         const { uri } = await camera.takePictureAsync(options);
-
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
         console.log('photo', photo);
@@ -93,7 +92,7 @@ const CreatePostsScreen = ({ navigation }) =>
         longitude,
       });
 
-      let fullLocation = `${geoCode[0].city},${geoCode[0].country}`;
+      let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
       setInputLocation(fullLocation);
     };
 
@@ -153,8 +152,6 @@ const CreatePostsScreen = ({ navigation }) =>
     }, []);
 
     const handleSubmit = async () => {
-
-
     if (
       photo.length !== 0 &&
       title.length !== 0 &&
@@ -187,9 +184,8 @@ const CreatePostsScreen = ({ navigation }) =>
       await setDoc(doc(db, "posts", `${id}`), newPost);
 
       dispatch(addPost(newPost));
-      dispatch(getAllPosts());
-    //   clearPost();
-    //   setIsLoading(false);
+        dispatch(getAllPosts());
+        handleReset();
       navigation.navigate("Home");
     }
 
