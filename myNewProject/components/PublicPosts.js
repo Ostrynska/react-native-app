@@ -1,8 +1,8 @@
 import { EvilIcons, AntDesign } from "@expo/vector-icons";
 
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db, storage } from "../firebase/config";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPosts } from "../redux/posts/postsOperations";
 import { useEffect, useState } from "react";
@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 export const PublicPosts = ({ item, navigation }) => {
   const userNickname = useSelector((state) => state.auth.nickname);
   const [post, setPost] = useState(null);
-  const dispatch = useDispatch();
   const [likeCounter, setLikeCounter] = useState("#BDBDBD");
+  const [commentsCounter, setCommentsCounter] = useState("#BDBDBD");
 
+  const dispatch = useDispatch();
   const {
     photo,
     title,
@@ -24,6 +25,7 @@ export const PublicPosts = ({ item, navigation }) => {
     id,
     likes,
   } = item;
+
 
   useEffect(() => {
     if (likes?.includes(userNickname)) {
@@ -42,6 +44,7 @@ export const PublicPosts = ({ item, navigation }) => {
   }
 
   const postRef = doc(db, "posts", id);
+
   const like = async () => {
     if (post.likes.includes(userNickname)) {
       const filteredLikes = post.likes.filter((like) => like !== userNickname);
@@ -86,18 +89,18 @@ export const PublicPosts = ({ item, navigation }) => {
           activeOpacity={0.8}
           onPress={() => navigation.navigate("Comments", { photo, id })}
         >
-          <EvilIcons name="comment" size={24} color="#BDBDBD" />
-          <Text style={styles.spanValue}>{comments}</Text>
+          <EvilIcons name="comment" size={24} color={comments > 0 ? '#FF6C00' : "#BDBDBD"} />
+          <Text style={comments === 0 ? {...styles.spanValue, color: "#BDBDBD"}: {...styles.spanValue, color: '#212121'}}>{comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.spanBox} activeOpacity={0.8}>
           <AntDesign
             style={styles.spanLikeIcon}
             name="like2"
-            size={20}
+            size={18}
             color={likeCounter}
             onPress={like}
           />
-          <Text style={styles.spanValue}>{likes?.length}</Text>
+          <Text style={likes?.length === 0 ? {...styles.spanValue, color: "#BDBDBD"}: {...styles.spanValue, color: '#212121'}}>{likes?.length}</Text>
         </TouchableOpacity>
         <View style={styles.spanBoxLocation}>
           <EvilIcons name="location" size={24} color="#BDBDBD" />
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   userPhoto: {
-    marginTop: 10,
     borderRadius: 50,
     width: 35,
     height: 35,
@@ -127,14 +129,14 @@ const styles = StyleSheet.create({
   userInformation: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   userName: {
     marginLeft: 10,
     fontFamily: "Roboto-Medium",
     fontSize: 13,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
     marginTop: 5,
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   spanLikeIcon: {
-    marginLeft: 10,
+    marginLeft: 12,
   },
   spanBoxLocation: {
     flexDirection: "row",
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     fontWeight: 400,
     fontSize: 14,
-    lineHeight: 19,
+    lineHeight: 20,
     textAlign: 'right',
     textDecorationLine: 'underline',
     color: '#212121',
@@ -180,6 +182,5 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 16,
     lineHeight: 19,
-    // color: '#BDBDBD',
   },
 });
