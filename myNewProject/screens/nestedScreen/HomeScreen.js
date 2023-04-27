@@ -1,14 +1,13 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar, ScrollView} from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
 import { PublicPosts } from "../../components/PublicPosts";
 import { getAllPosts } from "../../redux/posts/postsOperations";
-
 
 const HomeScreen = ({ navigation, route }) =>
 {
@@ -44,8 +43,10 @@ const HomeScreen = ({ navigation, route }) =>
         });
     }, [navigation]);
 
+
+
     return(
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
  <View style={styles.innerBox}>
                 {user.userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: user.userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
@@ -61,7 +62,7 @@ const HomeScreen = ({ navigation, route }) =>
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
                     style={{
-                        marginBottom: 100,
+                        marginBottom: 32,
                     }}
                     />
                 </SafeAreaView>
@@ -97,7 +98,7 @@ const HomeScreen = ({ navigation, route }) =>
                 )}
                 /> */}
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
