@@ -7,12 +7,6 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { AntDesign } from '@expo/vector-icons';
 
-// import {
-//   getDownloadURL,
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-// } from "firebase/storage";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
