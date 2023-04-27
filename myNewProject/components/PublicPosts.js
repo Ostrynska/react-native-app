@@ -1,6 +1,6 @@
 import { EvilIcons, AntDesign } from "@expo/vector-icons";
 
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from "react-native";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ export const PublicPosts = ({ item, navigation }) => {
   const userNickname = useSelector((state) => state.auth.nickname);
   const [post, setPost] = useState(null);
   const dispatch = useDispatch();
-  const [likeCounter, setLikeCounter] = useState("black");
+  const [likeCounter, setLikeCounter] = useState("#BDBDBD");
 
   const {
     photo,
