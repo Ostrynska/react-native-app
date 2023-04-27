@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar} from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
@@ -34,10 +34,6 @@ const HomeScreen = ({ navigation, route }) =>
         <PublicPosts item={item} navigation={navigation} />
     );
 
-    // const updatePosts = () => {
-    //     dispatch(getAllPosts());
-    // };
-
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -50,7 +46,7 @@ const HomeScreen = ({ navigation, route }) =>
 
     return(
         <View style={styles.container}>
-            <View style={styles.innerBox}>
+ <View style={styles.innerBox}>
                 {user.userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: user.userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
                     <Text style={styles.user}>{user.nickname}</Text>
@@ -58,6 +54,7 @@ const HomeScreen = ({ navigation, route }) =>
                 </View>
             </View>
             <View style={{ marginHorizontal: 16 }}>
+                <SafeAreaView style={{ marginTop: StatusBar.currentHeight || 0 }}>
                 <FlatList
                     data={allPosts}
                     renderItem={renderItem}
@@ -66,7 +63,8 @@ const HomeScreen = ({ navigation, route }) =>
                     style={{
                         marginBottom: 100,
                     }}
-                />
+                    />
+                </SafeAreaView>
             {/* <FlatList
                 data={posts}
                 keyExtractor={(item, indx) => indx.toString()}
