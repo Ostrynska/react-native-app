@@ -3,11 +3,22 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
 import { useDispatch } from 'react-redux'
 
+import { Alert } from "react-native";
+
 import * as ImagePicker from 'expo-image-picker';
 
 import { AntDesign } from '@expo/vector-icons';
 
 import { authSignUpUser } from "../../redux/auth/authOperations";
+
+import uuid from "react-native-uuid";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+
+import {storage} from "../../firebase/config"
 
 const initialState = {
   nickname: "",
@@ -28,18 +39,20 @@ export default function RegistrationScreen({ navigation })
     password: false,
   });
 
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
-  const onFocus = (inputName) => {
-      setIsFocused({
-        [inputName]: true
-      })
+  const onFocus = (inputName) =>
+  {
+    setIsFocused({
+      [inputName]: true
+    })
   }
 
-  const onBlur = (inputName) => {
-      setIsFocused({
-        [inputName]: false
-      })
+  const onBlur = (inputName) =>
+  {
+    setIsFocused({
+      [inputName]: false
+    })
   }
 
   // useEffect(async () =>
@@ -60,11 +73,36 @@ export default function RegistrationScreen({ navigation })
       aspect: [4, 3],
       quality: 1
     });
-    setState((prevState) => ({ ...prevState, userPhoto: result.assets[0].uri }))
+    if (result.canceled) {
+      Alert.alert('User avatar is required')
+    }
+    
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri)
+      const photoLink = await uploadPhotoToServer(result.assets[0].uri);
+      setProfileImage(photoLink);
+      setState((prevState) => ({
+        ...prevState,
+        userPhoto: photoLink,
+      }));
     }
   }
+
+  const uploadPhotoToServer = async (photo) => {
+    try {
+      const id = uuid.v4();
+      const storageRef = ref(storage, `images/${id}`);
+      const resp = await fetch(photo);
+      const file = await resp.blob();
+      await uploadBytesResumable(storageRef, file);
+      // console.log(upload);
+      const link = await getDownloadURL(ref(storage, `images/${id}`));
+      return link;
+    } catch (error) {
+      Alert.alert(error.message);
+      // console.log(error.message);
+      return;
+    }
+  };
 
   const RemoveProfileImage = () =>
   {
@@ -73,11 +111,11 @@ export default function RegistrationScreen({ navigation })
 
   const handleSubmit = () =>
   {
-    // Keyboard.dismiss();
-
+    if (!state.email && !state.nickname && !state.userPhoto && !state.password ) {
+      return Alert.alert('All fields are required')
+    }
     dispatch(authSignUpUser(state));
     setState(initialState);
-    console.log(state);
   };
 
   return (
