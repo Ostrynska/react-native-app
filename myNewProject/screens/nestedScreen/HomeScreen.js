@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar, ScrollView} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar, ScrollView, LogBox} from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
@@ -12,9 +12,11 @@ import { getAllPosts } from "../../redux/posts/postsOperations";
 const HomeScreen = ({ navigation, route }) =>
 {
     const { allItems: allPosts } = useSelector((state) => state.posts);
-    const user = useSelector((state) => state.auth);
+    const {userPhoto, email, nickname} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    useEffect(() => {
+
+    useEffect(() =>
+    {
         dispatch(getAllPosts());
     }, []);
 
@@ -22,6 +24,10 @@ const HomeScreen = ({ navigation, route }) =>
     {
         dispatch(authSignOutUser());
     };
+
+    useEffect(() => {
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
+    }, [])
 
     useEffect(() => {
         if (route.params) {
@@ -47,15 +53,15 @@ const HomeScreen = ({ navigation, route }) =>
 
     return(
         <ScrollView style={styles.container}>
- <View style={styles.innerBox}>
-                {user.userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: user.userPhoto}}/> : <View style={styles.avatarBox}></View>}
+            <SafeAreaView style={{ marginTop: StatusBar.currentHeight || 0 }}>
+                <View style={styles.innerBox}>
+                {userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
-                    <Text style={styles.user}>{user.nickname}</Text>
-                    <Text style={styles.email}>{user.email}</Text>
+                    <Text style={styles.user}>{nickname}</Text>
+                    <Text style={styles.email}>{email}</Text>
                 </View>
             </View>
             <View style={{ marginHorizontal: 16 }}>
-                <SafeAreaView style={{ marginTop: StatusBar.currentHeight || 0 }}>
                 <FlatList
                     data={allPosts}
                     renderItem={renderItem}
@@ -65,39 +71,8 @@ const HomeScreen = ({ navigation, route }) =>
                         marginBottom: 32,
                     }}
                     />
-                </SafeAreaView>
-            {/* <FlatList
-                data={posts}
-                keyExtractor={(item, indx) => indx.toString()}
-                renderItem={({ item }) => (
-                <View
-                    style={{
-                    marginBottom: 34,
-                    justifyContent: "center",
-                    // alignItems: "center",
-                    }}
-                >
-
-                    <Image
-                    source={{ uri: item.photo }}
-                    style={{ width: '100%', height: 240, borderRadius: 8 }}
-                        />
-
-                        <Text style={styles.titlePost}></Text>
-                        <View style={{ marginTop: 11, flexDirection: 'row'}}>
-                            <TouchableOpacity style={{ flexDirection: "row-reverse", alignItems: 'center' }} onPress={() => navigation.navigate("Comments")}>
-                                <Text style={styles.commentsCount}>0</Text>
-                                <Feather name="message-circle" size={16} color="#BDBDBD"  />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{flexDirection: "row", marginLeft: 'auto', alignItems: 'center'}} onPress={() => navigation.navigate("Map")}>
-                                <Feather name="map-pin" size={16} color="#BDBDBD" style={{right: 8}} />
-                                <Text style={styles.location}></Text>
-                            </TouchableOpacity>
-                        </View>
                 </View>
-                )}
-                /> */}
-            </View>
+            </SafeAreaView>
         </ScrollView>
     )
 }
