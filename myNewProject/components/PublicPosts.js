@@ -11,7 +11,6 @@ export const PublicPosts = ({ item, navigation }) => {
   const userNickname = useSelector((state) => state.auth.nickname);
   const [post, setPost] = useState(null);
   const [likeCounter, setLikeCounter] = useState("#BDBDBD");
-  const [commentsCounter, setCommentsCounter] = useState("#BDBDBD");
 
   const dispatch = useDispatch();
   const {
