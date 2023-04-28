@@ -5,7 +5,11 @@ import { TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Ionicons, AntDesign, Feather} from '@expo/vector-icons';
+import { Ionicons, AntDesign, Feather } from '@expo/vector-icons';
+
+import { useDispatch } from 'react-redux';
+
+import { authSignOutUser } from "./redux/auth/authOperations";
 
 import RegistrationScreen from './screens/auth/RegistrationScreen';
 import LoginScreen from './screens/auth/LoginScreen';
@@ -18,6 +22,7 @@ const MainTab = createBottomTabNavigator();
 
 export const useRoute = (isAuth) =>
 {
+  const dispatch = useDispatch();
   if (!isAuth) {
     return (
       <AuthStack.Navigator initialRouteName="Login" >
@@ -45,13 +50,13 @@ export const useRoute = (isAuth) =>
           <MainTab.Screen
             name='Posts'
             component={PostsScreen}
-        options={({ navigation, route }) => ({
+            options={({ navigation, route }) => ({
             tabBarIcon: ({ focused, size, color }) => (
               <Ionicons name="grid-outline" size={size} color='#212121CC' style={{ left: 40, marginTop: 10 }}
               />
             ),
             headerRight: () => (
-              <TouchableOpacity style={{marginRight: 16, bottom: 4}}>
+              <TouchableOpacity style={{marginRight: 16, bottom: 4}} onPress={() => dispatch(authSignOutUser())}>
                 <Feather name="log-out" size={24} color="#BDBDBD" />
               </TouchableOpacity>
           ),
