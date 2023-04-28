@@ -74,10 +74,10 @@ export const authStateChangeUser = () => async (dispatch) => {
 
 export const authUpdateAvatar = (photoURL) => async (dispatch) => {
   try {
-    await updateProfile(auth.stateChange, {
+    await updateProfile(auth.currentUser, {
       photoURL,
     });
-    const user = auth.stateChange;
+    const user = auth.currentUser;
     dispatch(
       updateUserAvatar({
         userPhoto: user.photoURL,
