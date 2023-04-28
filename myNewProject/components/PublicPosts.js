@@ -68,7 +68,7 @@ export const PublicPosts = ({ item, navigation }) => {
           <View style={styles.userInformation}>
             <Image
               source={{
-                uri: userPhoto,
+                uri: userPhoto
               }}
               style={styles.userPhoto}
             />
@@ -78,7 +78,7 @@ export const PublicPosts = ({ item, navigation }) => {
       )}
       <Image
         source={{
-          uri: photo,
+          uri: photo, 
         }}
         style={{ width: '100%', height: 240, borderRadius: 8 }}
       />
