@@ -197,7 +197,7 @@ const CreatePostsScreen = ({ navigation }) =>
 };
 
     const handleReset = () => {
-        setPhoto('');
+        setPhoto("");
         setLocation("");
         setTitle("");
         setInputLocation("");
