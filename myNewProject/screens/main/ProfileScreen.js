@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList } from "react-native";
+import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList, SafeAreaView } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
 
 import { AntDesign, Feather } from '@expo/vector-icons';
 
-import authSelectors from "../../redux/auth/authSelectors";
+// import authSelectors from "../../redux/auth/authSelectors";
 import { authSignOutUser, authUpdateAvatar } from "../../redux/auth/authOperations";
 
 import { PrivatePosts } from "../../components/PrivatePosts";
@@ -16,17 +16,23 @@ import { getOwnPosts } from "../../redux/posts/postsOperations";
 const  ProfileScreen = ({ navigation }) =>
 {
   const { height, width } = Dimensions.get('window');
-  const { nickname, userId } = useSelector((state) => state.auth);
+
+  const { nickname, userId, userPhoto } = useSelector((state) => state.auth);
   const { items: posts, allItems: allPosts, } = useSelector((state) => state.posts);
+  
   const [profileImage, setProfileImage] = useState(userPhoto);
 
-  const user = useSelector(authSelectors.getUser);
-  const { userPhoto } = useSelector(authSelectors.getUser);
+  // const user = useSelector(authSelectors.getUser);
+  // const { userPhoto } = useSelector(authSelectors.getUser);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getOwnPosts(userId));
   }, [allPosts]);
+
+  console.log(posts);
+
 
   const renderItem = ({ item }) => (
     <PrivatePosts item={item} navigation={navigation} />
@@ -59,6 +65,7 @@ const  ProfileScreen = ({ navigation }) =>
   };
 
   return (
+
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -75,12 +82,12 @@ const  ProfileScreen = ({ navigation }) =>
           source={require("../../assets/images/signUp-bg.jpg")}
         >
             <View style={styles.innerBox} height={height / 1.35}>
-{user.userPhoto ?
+            {userPhoto ?
               <Image
-                source={{ uri: user.userPhoto }}
+                source={{ uri: userPhoto }}
                 style={{...styles.photoBox, width: 120, height: 120 }} />
               : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }} />}
-            {user.userPhoto ?
+            {userPhoto ?
               <TouchableOpacity onPress={RemoveProfileImage} >
               <View style={{...styles.photoBoxBtn, borderColor: "#BDBDBD"}}>
                   <AntDesign name="close" size={16} color="#BDBDBD"/>
@@ -92,27 +99,33 @@ const  ProfileScreen = ({ navigation }) =>
                 </View>
               </TouchableOpacity>
             }
-            <TouchableOpacity onPress={signOut}
-                  >
-                  <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
-              </TouchableOpacity>
-              {/* <View style={{position: 'relative'}}>
-                <Text style={styles.titleText}>{user.nickname}</Text>
+            <TouchableOpacity onPress={signOut} >
+              <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>{nickname}</Text>
+
+          {posts.length === 0 ? (
+            <Text >You don't have any posts yet.</Text>
+          ) : (
+            <View style={{ marginHorizontal: 16 }}>
                 <FlatList
-                  data={posts}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id}
-                  style={{
-                    marginTop: 10,
-                    // marginBottom: 160,
-                  }}
-                  showsVerticalScrollIndicator={false}
-                />
-              </View> */}
-            </View>
-        </ImageBackground>
+                    data={allPosts}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    style={{
+                        marginBottom: 32,
+                    }}
+                    />
+                </View>
+          )}
+              </View>
+            {/* </View> */}
+          </ImageBackground>
+              {/* </ScrollView> */}
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
+
   );
 }
 
@@ -163,5 +176,13 @@ photoBox: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bottomBox: {
+    alignSelf: "center",
+  },
+  error: {
+    marginTop: 20,
+    alignSelf: "center",
+    fontFamily: "Roboto-Medium",
   },
 });
