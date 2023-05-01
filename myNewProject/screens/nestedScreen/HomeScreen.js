@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView, StatusBar, ScrollView, LogBox} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, SafeAreaView } from "react-native";
 
 import { Feather } from '@expo/vector-icons';
 
@@ -45,27 +45,31 @@ const HomeScreen = ({ navigation, route }) =>
         });
     }, [navigation]);
 
-    return(
-        <View style={styles.container}>
-                <View style={styles.innerBox}>
+    const ListHeader = () =>
+    {
+        return (
+            <View style={styles.innerBox}>
                 {userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
                     <Text style={styles.user}>{nickname}</Text>
                     <Text style={styles.email}>{email}</Text>
                 </View>
             </View>
-            <View style={{ marginHorizontal: 16 }}>
-                <FlatList
-                    data={allPosts}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    style={{
-                        marginBottom: 32,
-                    }}
-                    />
-                </View>
-        </View>
+        )
+    }
+
+    return(
+        <SafeAreaView style={styles.container}>
+            <View style={{marginHorizontal: 16}}>
+            <FlatList
+                data={allPosts}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                ListHeaderComponent={ListHeader}
+                showsVerticalScrollIndicator={false}
+            />
+            </View>
+        </SafeAreaView>
     )
 }
 
@@ -75,7 +79,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
     },
     innerBox: {
-        marginHorizontal: 16,
         marginVertical: 32,
         flexDirection: 'row',
         flexWrap: 'wrap',
