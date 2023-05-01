@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 
-import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image, FlatList, SafeAreaView } from "react-native";
+import { StyleSheet, View, ImageBackground, Text, TouchableOpacity, Dimensions, Image, FlatList, SafeAreaView } from "react-native";
 
 import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from "expo-media-library";
 
 import { AntDesign, Feather } from '@expo/vector-icons';
 
-// import authSelectors from "../../redux/auth/authSelectors";
 import { authSignOutUser, authUpdateAvatar } from "../../redux/auth/authOperations";
 
 import { PrivatePosts } from "../../components/PrivatePosts";
@@ -19,20 +19,14 @@ const  ProfileScreen = ({ navigation }) =>
 
   const { nickname, userId, userPhoto } = useSelector((state) => state.auth);
   const { items: posts, allItems: allPosts, } = useSelector((state) => state.posts);
-  
   const [profileImage, setProfileImage] = useState(userPhoto);
-
-  // const user = useSelector(authSelectors.getUser);
-  // const { userPhoto } = useSelector(authSelectors.getUser);
+  const [libraryPermission, setLibraryPermission] = useState();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getOwnPosts(userId));
-  }, [allPosts]);
-
-  console.log(posts);
-
+  }, [posts]);
 
   const renderItem = ({ item }) => (
     <PrivatePosts item={item} navigation={navigation} />
@@ -53,6 +47,14 @@ const  ProfileScreen = ({ navigation }) =>
     }
   }
 
+  useEffect(() => {
+    (async () => {
+      const mediaLibraryPermission =
+        await MediaLibrary.requestPermissionsAsync();
+       setLibraryPermission(mediaLibraryPermission.status === "granted");
+    })();
+  }, []);
+
   const RemoveProfileImage = () =>
   {
     dispatch(authUpdateAvatar(''));
@@ -65,15 +67,7 @@ const  ProfileScreen = ({ navigation }) =>
   };
 
   return (
-
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        height={height}
-        width={width}
-        style={styles.container}
-        keyboardVerticalOffset={-150}
-    >
+    <View style={styles.container}>
         <ImageBackground
           style={styles.image}
           height={height}
@@ -81,7 +75,7 @@ const  ProfileScreen = ({ navigation }) =>
           preserveAspectRatio='xMidYWid slice'
           source={require("../../assets/images/signUp-bg.jpg")}
         >
-            <View style={styles.innerBox} height={height / 1.35}>
+          <View style={styles.innerBox} height={height / 1.35}>
             {userPhoto ?
               <Image
                 source={{ uri: userPhoto }}
@@ -90,9 +84,9 @@ const  ProfileScreen = ({ navigation }) =>
             {userPhoto ?
               <TouchableOpacity onPress={RemoveProfileImage} >
               <View style={{...styles.photoBoxBtn, borderColor: "#BDBDBD"}}>
-                  <AntDesign name="close" size={16} color="#BDBDBD"/>
-                </View>
-            </TouchableOpacity> :
+                <AntDesign name="close" size={16} color="#BDBDBD"/>
+              </View>
+              </TouchableOpacity> :
               <TouchableOpacity onPress={PickProfileImage}>
                 <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
                   <AntDesign name="plus" size={16} color="#FF6C00"/>
@@ -100,32 +94,27 @@ const  ProfileScreen = ({ navigation }) =>
               </TouchableOpacity>
             }
             <TouchableOpacity onPress={signOut} >
-              <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '40%' }} />
+              <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '45%' }} />
             </TouchableOpacity>
             <Text style={styles.titleText}>{nickname}</Text>
-
-          {posts.length === 0 ? (
-            <Text >You don't have any posts yet.</Text>
-          ) : (
-            <View style={{ marginHorizontal: 16 }}>
-                <FlatList
-                    data={allPosts}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    style={{
-                        marginBottom: 32,
-                    }}
-                    />
-                </View>
-          )}
-              </View>
-            {/* </View> */}
-          </ImageBackground>
-              {/* </ScrollView> */}
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
-
+            {posts.length === 0 ? (
+              <Text >You don't have any posts yet.</Text>
+            ) : (
+              <SafeAreaView>
+                  <FlatList
+                      data={allPosts}
+                      renderItem={renderItem}
+                      keyExtractor={(item) => item.id}
+                      showsVerticalScrollIndicator={false}
+                      style={{
+                          marginBottom: 155,
+                      }}
+                      />
+                  </SafeAreaView>
+            )}
+        </View>
+      </ImageBackground>
+    </View>
   );
 }
 
@@ -134,6 +123,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   image: {
     flex: 1,
@@ -146,6 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
+    paddingHorizontal: 16,
   },
   titleText: {
     marginTop: 92,
@@ -156,7 +147,7 @@ const styles = StyleSheet.create({
     color: '#212121',
     textAlign: 'center',
     },
-photoBox: {
+  photoBox: {
     position: "absolute",
     marginTop: -60,
     width: 120,
