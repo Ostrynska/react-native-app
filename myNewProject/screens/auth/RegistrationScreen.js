@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 
-import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
-import { useDispatch } from 'react-redux'
+import { StyleSheet, View, ImageBackground, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Image, Alert } from "react-native";
 
-import { Alert } from "react-native";
+import { useDispatch } from 'react-redux';
+
+import uuid from "react-native-uuid";
 
 import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from "expo-media-library";
 
 import { AntDesign } from '@expo/vector-icons';
 
-import { authSignUpUser } from "../../redux/auth/authOperations";
-
-import uuid from "react-native-uuid";
-import {
+import { storage } from "../../firebase/config";
+import
+  {
   getDownloadURL,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
 
-import {storage} from "../../firebase/config"
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   nickname: "",
@@ -33,6 +34,7 @@ export default function RegistrationScreen({ navigation })
   const [isSecureEntry, setSecureEntry] = useState(true);
   const [state, setState] = useState(initialState);
   const [profileImage, setProfileImage] = useState(null);
+  const [libraryPermission, setLibraryPermission] = useState();
   const [isFocused, setIsFocused] = useState({
     nickname: false,
     email: false,
@@ -55,15 +57,14 @@ export default function RegistrationScreen({ navigation })
     })
   }
 
-  // useEffect(async () =>
-  // {
-  //   if (Platform.OS !== 'web') {
-  //     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //     // if (status !== 'granted')  {
-  //     //   alert('Permisson denied!')
-  //     // }
-  //   }
-  // }, [])
+  useEffect(() =>
+  {
+    (async () => {
+      const mediaLibraryPermission =
+        await MediaLibrary.requestPermissionsAsync();
+      setLibraryPermission(mediaLibraryPermission.status === "granted");
+    })();
+  }, []);
 
   const PickProfileImage = async () =>
   {
@@ -76,7 +77,7 @@ export default function RegistrationScreen({ navigation })
     if (result.canceled) {
       Alert.alert('User avatar is required')
     }
-    
+
     if (!result.canceled) {
       const photoLink = await uploadPhotoToServer(result.assets[0].uri);
       setProfileImage(photoLink);
