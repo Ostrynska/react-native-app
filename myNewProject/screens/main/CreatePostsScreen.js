@@ -5,16 +5,18 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { useDispatch, useSelector } from "react-redux";
 
+import uuid from "react-native-uuid";
+
 import { Camera, CameraType } from "expo-camera";
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from "expo-media-library";
+
 import * as Location from 'expo-location';
 
 import { FontAwesome, Feather, AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-import * as ImagePicker from 'expo-image-picker';
-
 import { storage, db } from "../../firebase/config";
 import { doc, setDoc } from "firebase/firestore";
-import uuid from "react-native-uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { addPost, getAllPosts } from "../../redux/posts/postsOperations";
@@ -27,6 +29,7 @@ const CreatePostsScreen = ({ navigation }) =>
     const [type, setType] = useState(CameraType.back);
     const [isOpenCamera, setIsOpenCamera] = useState(false);
     const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [libraryPermission, setLibraryPermission] = useState();
     const [photo, setPhoto] = useState(null);
 
     const [title, setTitle] = useState("");
@@ -43,6 +46,14 @@ const CreatePostsScreen = ({ navigation }) =>
     const { userId, nickname, userPhoto } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        (async () => {
+        const mediaLibraryPermission =
+            await MediaLibrary.requestPermissionsAsync();
+        setLibraryPermission(mediaLibraryPermission.status === "granted");
+        })();
+    }, []);
+
     const takePhotoFromLibrary = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -50,9 +61,9 @@ const CreatePostsScreen = ({ navigation }) =>
             aspect: [4, 3],
             quality: 1
         });
-            if (!result.canceled) {
-                setPhoto(result.assets[0].uri)
-            }
+        if (!result.canceled) {
+            setPhoto(result.assets[0].uri)
+        }
         setPhoto(result.assets[0].uri)
         setIsOpenCamera(false);
         const location = await Location.getCurrentPositionAsync({});
@@ -80,20 +91,19 @@ const CreatePostsScreen = ({ navigation }) =>
         const { uri } = await camera.takePictureAsync(options);
         setIsOpenCamera((prev) => !prev);
         setPhoto(uri);
-        console.log('photo', photo);
-              const location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+        const location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
 
-      const latitude = location?.coords.latitude;
-      const longitude = location?.coords.longitude;
+        const latitude = location?.coords.latitude;
+        const longitude = location?.coords.longitude;
 
-      const geoCode = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
+        const geoCode = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude,
+        });
 
-      let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
-      setInputLocation(fullLocation);
+        let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
+        setInputLocation(fullLocation);
     };
 
     const uploadPhotoToServer = async (photo) =>
@@ -153,48 +163,45 @@ const CreatePostsScreen = ({ navigation }) =>
 
     const handleSubmit = async () => {
     if (
-      photo.length !== 0 &&
-      title.length !== 0 &&
-      inputLocation.length !== 0
+        photo.length !== 0 &&
+        title.length !== 0 &&
+        inputLocation.length !== 0
     ) {
-      const address = await Location.geocodeAsync(inputLocation);
-      const latitude = address[0]?.latitude;
-      const longitude = address[0]?.longitude;
+        const address = await Location.geocodeAsync(inputLocation);
+        const latitude = address[0]?.latitude;
+        const longitude = address[0]?.longitude;
 
-      const id = uuid.v4();
-      const photoLink = await uploadPhotoToServer(photo);
+        const id = uuid.v4();
+        const photoLink = await uploadPhotoToServer(photo);
 
-      const date = new Date().getTime();
-      const coords =
-        latitude && longitude ? { latitude, longitude } : "noCoords";
-      const newPost = {
-        createdAt: date,
-        photo: photoLink,
-        title,
-        likes: [],
-        comments: 0,
-        photoLocation: coords,
-        inputLocation,
-        id,
-        userId,
-        userPhoto,
-        nickname,
-      };
-        console.log(newPost);
-      await setDoc(doc(db, "posts", `${id}`), newPost);
-
-      dispatch(addPost(newPost));
+        const date = new Date().getTime();
+        const coords =
+            latitude && longitude ? { latitude, longitude } : "noCoords";
+        const newPost = {
+            createdAt: date,
+            photo: photoLink,
+            title,
+            likes: [],
+            comments: 0,
+            photoLocation: coords,
+            inputLocation,
+            id,
+            userId,
+            userPhoto,
+            nickname,
+    };
+    await setDoc(doc(db, "posts", `${id}`), newPost);
+        dispatch(addPost(newPost));
         dispatch(getAllPosts());
         handleReset();
-      navigation.navigate("Home");
+        navigation.navigate("Home");
     }
-
     return;
-  };
+    };
 
     const openCamera = () => {
         setIsOpenCamera((prev) => !prev);
-};
+    };
 
     const handleReset = () => {
         setPhoto("");
