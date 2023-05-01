@@ -26,10 +26,6 @@ const HomeScreen = ({ navigation, route }) =>
     };
 
     useEffect(() => {
-        LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
-    }, [])
-
-    useEffect(() => {
         if (route.params) {
             setPosts((prevState) => [...prevState, route.params]);
         }
@@ -49,11 +45,8 @@ const HomeScreen = ({ navigation, route }) =>
         });
     }, [navigation]);
 
-
-
     return(
-        <ScrollView style={styles.container}>
-            <SafeAreaView style={{ marginTop: StatusBar.currentHeight || 0 }}>
+        <View style={styles.container}>
                 <View style={styles.innerBox}>
                 {userPhoto !== null ? <Image style={styles.avatarBox} source={{uri: userPhoto}}/> : <View style={styles.avatarBox}></View>}
                 <View style={styles.infoBox}>
@@ -72,8 +65,7 @@ const HomeScreen = ({ navigation, route }) =>
                     }}
                     />
                 </View>
-            </SafeAreaView>
-        </ScrollView>
+        </View>
     )
 }
 
