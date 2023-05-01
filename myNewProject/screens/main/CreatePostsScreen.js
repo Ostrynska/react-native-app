@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Button, TouchableOpacity, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Button, TouchableOpacity, ImageBackground, Alert } from "react-native";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { useDispatch, useSelector } from "react-redux";
@@ -30,14 +30,14 @@ const CreatePostsScreen = ({ navigation }) =>
     const [isOpenCamera, setIsOpenCamera] = useState(false);
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [libraryPermission, setLibraryPermission] = useState();
-    const [photo, setPhoto] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [photo, setPhoto] = useState("");
 
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
 
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState("");
     const [inputLocation, setInputLocation] = useState("");
 
-    const [isActive, setIsActive] = useState(false);
     const [isFocused, setIsFocused] = useState({
         title: false,
         place: false,
@@ -78,7 +78,10 @@ const CreatePostsScreen = ({ navigation }) =>
         });
 
         let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
-        setInputLocation(fullLocation);
+        let shortLocation = `${geoCode[0].country}`;
+        if (fullLocation.length > 15) {
+            return setInputLocation(shortLocation)
+        } return setInputLocation(fullLocation);
     }
 
     const takePhoto = async () =>
@@ -103,7 +106,10 @@ const CreatePostsScreen = ({ navigation }) =>
         });
 
         let fullLocation = `${geoCode[0].city}, ${geoCode[0].country}`;
-        setInputLocation(fullLocation);
+        let shortLocation = `${geoCode[0].country}`;
+        if (fullLocation.length > 15) {
+            return setInputLocation(shortLocation)
+        } return setInputLocation(fullLocation);
     };
 
     const uploadPhotoToServer = async (photo) =>
@@ -204,7 +210,7 @@ const CreatePostsScreen = ({ navigation }) =>
     };
 
     const handleReset = () => {
-        setPhoto("");
+        setPhoto("")
         setLocation("");
         setTitle("");
         setInputLocation("");
@@ -214,17 +220,18 @@ const CreatePostsScreen = ({ navigation }) =>
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
     }
 
-    if (!permission) {
-        return <View />;
-    }
-    if (!permission.granted) {
+    const CameraPermission = () =>
+    {
         return (
-        <>
-            <Text style={{ textAlign: 'center', marginVertical: '50%' }}>We need your permission to show the camera</Text>
-            <Button onPress={requestPermission} title="Grant permission" />
-      </>
-    );
-  }
+            Alert.alert('"Social App" Would Like to Access the Camera', 'We need your permission to show the camera', [
+        {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+        },
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]))
+    }
 
     return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -288,18 +295,32 @@ const CreatePostsScreen = ({ navigation }) =>
                                 </View>
                             </View>
 
-                            <TouchableOpacity
+                            {photo !== null && title.length >= 1 || location.length >= 1 && inputLocation.length >= 1 ? <TouchableOpacity
+                                style={{...styles.btn, backgroundColor: '#FF6C00'}}
+                                onPress={() => handleSubmit()}
+                            >
+                                <Text style={{...styles.btnText, color: "#ffffff"}}>Post</Text>
+                            </TouchableOpacity> :                             <TouchableOpacity
                                 style={styles.btn}
                                 onPress={() => handleSubmit()}
                             >
                                 <Text style={styles.btnText}>Post</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.btnReset}
-                                onPress={() => handleReset()}
-                            >
-                                <Feather name="trash-2" size={24} color="#BDBDBD" style={{marginVertical: 6}} />
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
+
+                            {photo !== "" || title.length >= 1 || location.length >= 1 || inputLocation.length >= 1 ?
+                                <TouchableOpacity
+                                    style={{ ...styles.btnReset, backgroundColor: '#FF6C00' }}
+                                    onPress={() => handleReset()}
+                                >
+                                    <Feather name="trash-2" size={24} color="#ffffff" style={{ marginVertical: 6 }} />
+                                </TouchableOpacity> :
+                                <TouchableOpacity
+                                    style={styles.btnReset}
+                                    onPress={() => handleReset()}
+                                >
+                                    <Feather name="trash-2" size={24} color="#BDBDBD" style={{ marginVertical: 6 }} />
+                                </TouchableOpacity>
+                            }
                         </View>
                     </View>
                 </View>
