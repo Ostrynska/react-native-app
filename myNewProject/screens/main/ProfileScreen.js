@@ -88,7 +88,7 @@ const  ProfileScreen = ({ navigation }) =>
               </View>
               </TouchableOpacity> :
               <TouchableOpacity onPress={PickProfileImage}>
-                <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
+                <View style={{...styles.photoBoxBtn, borderColor: "≈"}}>
                   <AntDesign name="plus" size={16} color="#FF6C00"/>
                 </View>
               </TouchableOpacity>
