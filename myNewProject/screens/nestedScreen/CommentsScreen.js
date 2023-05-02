@@ -53,13 +53,11 @@ const CommentsScreen = ({ route }) => {
     dispatch(getAllPosts());
     setMessage("");
   };
-
-  const handleKeyboard = () => {
-    Keyboard.dismiss();
-  };
+              {/* {comments.postId === posts.} */}
 
   return (
-    <TouchableWithoutFeedback onPress={handleKeyboard}>
+    
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
