@@ -27,6 +27,7 @@ App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for
   - android: `npm run android`
   - web: `npm run web`
 
-<br>
-<br>
-//<img src="https://drive.google.com/drive/folders/11eT3IxIanqbAiPjWDfw3aCKm4tkuTr-r">
+<p align="center">
+  <img src="../">
+  <img src="your_relative_path_here_number_2_large_name" width="350" alt="accessibility text">
+</p
