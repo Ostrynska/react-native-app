@@ -102,11 +102,10 @@ const  ProfileScreen = ({ navigation }) =>
             ) : (
               <SafeAreaView style={{width: '100%'}}>
                   <FlatList
-                      data={allPosts}
+                      data={posts}
                       renderItem={renderItem}
                       keyExtractor={(item) => item.id}
                       showsVerticalScrollIndicator={false}
-                      // ListFooterComponent={ListFooter}
                       style={{
                           marginBottom: 155,
                       }}
