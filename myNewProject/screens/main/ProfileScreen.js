@@ -88,7 +88,7 @@ const  ProfileScreen = ({ navigation }) =>
               </View>
               </TouchableOpacity> :
               <TouchableOpacity onPress={PickProfileImage}>
-                <View style={{...styles.photoBoxBtn, borderColor: "≈"}}>
+                <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
                   <AntDesign name="plus" size={16} color="#FF6C00"/>
                 </View>
               </TouchableOpacity>
@@ -96,16 +96,17 @@ const  ProfileScreen = ({ navigation }) =>
             <TouchableOpacity onPress={signOut} >
               <Feather name="log-out" size={24} color="#BDBDBD" style={{position: 'absolute', top: 14, left: '45%' }} />
             </TouchableOpacity>
-            <Text style={styles.titleText}>{nickname}</Text>
+          <Text style={styles.titleText}>{nickname}</Text>
             {posts.length === 0 ? (
               <Text >You don't have any posts yet.</Text>
             ) : (
-              <SafeAreaView>
+              <SafeAreaView style={{width: '100%'}}>
                   <FlatList
                       data={allPosts}
                       renderItem={renderItem}
                       keyExtractor={(item) => item.id}
                       showsVerticalScrollIndicator={false}
+                      // ListFooterComponent={ListFooter}
                       style={{
                           marginBottom: 155,
                       }}
