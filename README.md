@@ -28,6 +28,6 @@ App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for
   - web: `npm run web`
 
 <p align="center">
-  <img src="../">
-  <img src="your_relative_path_here_number_2_large_name" width="350" alt="accessibility text">
+  <img src="./myNewProject/assets/screen-01.png">
+  <img src="./myNewProject/assets/screen-02.png">
 </p
