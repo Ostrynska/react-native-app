@@ -26,8 +26,6 @@ App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for
   - ios: `npm run ios`
   - android: `npm run android`
   - web: `npm run web`
-
-<p align="center">
+  
   <img src="./myNewProject/assets/screen-01.png">
   <img src="./myNewProject/assets/screen-02.png">
-</p
