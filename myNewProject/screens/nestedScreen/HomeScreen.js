@@ -35,16 +35,6 @@ const HomeScreen = ({ navigation, route }) =>
         <PublicPosts item={item} navigation={navigation} />
     );
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <TouchableOpacity onPress={signOut} style={{marginRight: 16}}>
-                    <Feather name="log-out" size={24} color="#BDBDBD"/>
-                </TouchableOpacity>
-            ),
-        });
-    }, [navigation]);
-
     const ListHeader = () =>
     {
         return (
@@ -58,8 +48,15 @@ const HomeScreen = ({ navigation, route }) =>
         )
     }
 
-    return(
-        <SafeAreaView style={styles.container}>
+    return (
+        <>
+            <SafeAreaView style={styles.container}>
+                <View style={{ height: 30, borderBottomColor: "#0000004D", borderWidth: 0.5, borderColor: '#ffffff', flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontFamily: 'Roboto-Medium', fontSize: 17, lineHeight: 22, color: '#212121', letterSpacing: -0.408, marginLeft: "45%"}}>Posts</Text>
+                <TouchableOpacity onPress={signOut} style={{marginLeft: '38%', bottom: 3}}>
+                    <Feather name="log-out" size={24} color="#BDBDBD"/>
+                </TouchableOpacity>
+                </View>
             <View style={{marginHorizontal: 16}}>
             <FlatList
                 data={allPosts}
@@ -70,6 +67,7 @@ const HomeScreen = ({ navigation, route }) =>
             />
             </View>
         </SafeAreaView>
+    </>
     )
 }
 
