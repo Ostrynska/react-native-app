@@ -29,4 +29,4 @@ App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for
 
 <br>
 <br>
-//<img src="assets/screenshots/connectionsscreenshots.png">
+//<img src="https://drive.google.com/drive/folders/11eT3IxIanqbAiPjWDfw3aCKm4tkuTr-r">
