@@ -31,7 +31,7 @@ const CreatePostsScreen = ({ navigation }) =>
     const [permission, requestPermission] = Camera.useCameraPermissions();
     const [libraryPermission, setLibraryPermission] = useState();
     const [modalVisible, setModalVisible] = useState(false);
-    const [photo, setPhoto] = useState("");
+    const [photo, setPhoto] = useState(null);
 
     const [title, setTitle] = useState('');
 
@@ -210,7 +210,7 @@ const CreatePostsScreen = ({ navigation }) =>
     };
 
     const handleReset = () => {
-        setPhoto("")
+        setPhoto(null)
         setLocation("");
         setTitle("");
         setInputLocation("");
@@ -307,7 +307,7 @@ const CreatePostsScreen = ({ navigation }) =>
                                 <Text style={styles.btnText}>Post</Text>
                             </TouchableOpacity>}
 
-                            {photo !== "" || title.length >= 1 || location.length >= 1 || inputLocation.length >= 1 ?
+                            {photo !== null || title.length >= 1 || location.length >= 1 || inputLocation.length >= 1 ?
                                 <TouchableOpacity
                                     style={{ ...styles.btnReset, backgroundColor: '#FF6C00' }}
                                     onPress={() => handleReset()}
