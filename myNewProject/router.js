@@ -4,10 +4,11 @@ import { TouchableOpacity, View } from "react-native";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import { Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 
 import { authSignOutUser } from "./redux/auth/authOperations";
 
@@ -22,6 +23,7 @@ const MainTab = createBottomTabNavigator();
 
 export const useRoute = (isAuth) =>
 {
+  const { items } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   if (!isAuth) {
     return (
@@ -50,7 +52,14 @@ export const useRoute = (isAuth) =>
           <MainTab.Screen
             name='Posts'
             component={PostsScreen}
-            options={({ navigation, route }) => ({
+            options={({ route }) => ({
+            tabBarStyle: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+                if (routeName === "Comments" || routeName === "Map") {
+              return { display: "none" };
+            }
+            return;
+            })(route),
             tabBarIcon: ({ focused, size, color }) => (
               <Ionicons name="grid-outline" size={size} color='#212121CC' style={{ left: 40, marginTop: 10 }}
               />
@@ -59,20 +68,20 @@ export const useRoute = (isAuth) =>
               <TouchableOpacity style={{marginRight: 16, bottom: 4}} onPress={() => dispatch(authSignOutUser())}>
                 <Feather name="log-out" size={24} color="#BDBDBD" />
               </TouchableOpacity>
-          ),
+              ),
+            headerShown: false,
           })}
         />
           <MainTab.Screen
             name='Create post'
             component={CreatePostsScreen}
-        options={({ navigation, route }) => ({
+            options={({ navigation, route }) => ({
             tabBarIcon: ({ focused, size, color }) => (
               <View style={{ width: 70, height: 40, borderRadius: 20, backgroundColor: "#FF6C00", alignContent: 'center', alignItems: 'center', marginTop: 9 }}>
-              {/* <Feather name="user" size={16} color="FFFFFF" /> */}
-              <AntDesign name="plus" size={16} color="#FFFFFF" style={{ marginVertical: 12 }} />
+                <AntDesign name="plus" size={16} color="#FFFFFF" style={{ marginVertical: 12 }} />
               </View>
               ),
-            tabBarStyle: {display: 'none'},
+            tabBarStyle: {display: 'none'} ,
             headerLeft: () => (
               <TouchableOpacity style={{ marginLeft: 16 }}>
                 <AntDesign name="arrowleft" size={24} color="#212121" />
@@ -88,6 +97,7 @@ export const useRoute = (isAuth) =>
               <Feather name="user" size={size} color='#212121CC' style={{ right: 40, marginTop: 10 }} />
               ),
               headerShown: false,
+              // tabBarStyle: {display: 'none'},
             }}
           />
       </MainTab.Navigator>
