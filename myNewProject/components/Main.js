@@ -8,7 +8,6 @@ import { ActivityIndicator } from "react-native";
 
 const Main = () => {
   const { stateChange } = useSelector((state) => state.auth);
-  const { userId } = useSelector((state) => state.auth);
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
 
