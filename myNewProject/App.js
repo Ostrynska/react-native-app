@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Provider } from 'react-redux';
 import { store } from "./redux/store";
 
-export function App()
+function App()
 {
   const [fontsLoaded] = Font.useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
@@ -31,3 +31,4 @@ export function App()
     </Provider>
 )}
 
+export default App;
