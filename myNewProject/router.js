@@ -23,7 +23,6 @@ const MainTab = createBottomTabNavigator();
 
 export const useRoute = (isAuth) =>
 {
-  const { items } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   if (!isAuth) {
     return (
