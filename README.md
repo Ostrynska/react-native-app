@@ -1,6 +1,6 @@
 <h1> 📎Social media App</h1>
 
-<p>This is a cross platform (iOS and Android) social media mobile application.</p>
+<p>This is a cross-platform (iOS and Android) social media mobile application.</p>
 <p>App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for authentication and storing data.</p>
 
 ## Description
@@ -20,7 +20,7 @@
   - Should print something like `6.4.1`
 
 **3. Install Dependencies**
-* Navigate to project folder and run: `npm install`
+* Navigate to the project folder and run: `npm install`
 
 **4. Run Expo App**
 * `expo start`
