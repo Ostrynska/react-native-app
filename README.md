@@ -1,6 +1,6 @@
-<h1> 📎Socket.IO chat</h1>
+<h1> 📎Social media App</h1>
 
-<p>This is a cross-platform (iOS and Android) social media mobile application.</p>
+<p>This is a cross platform (iOS and Android) social media mobile application.</p>
 <p>App is built using <b>React Native</b>. <b>Firebase</b> is the platform used for authentication and storing data.</p>
 
 ## Description
